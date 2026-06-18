@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/controls.tsx","./src/components/phonepreview.tsx","./src/components/qrlayer.tsx","./src/devices/presets.ts","./src/export/renderwallpaper.ts","./src/lib/qr.ts","./src/lib/qrcolor.ts","./src/lib/random.ts","./src/shaders/registry.ts","./src/state/store.tsx"],"version":"5.9.3"}
