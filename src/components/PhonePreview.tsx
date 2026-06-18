@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, useDispatchConfig } from '../state/store'
 import { getDevice, DEVICE_PRESETS } from '../devices/presets'
 import { getShader, buildShaderProps } from '../shaders/registry'
@@ -10,6 +10,7 @@ export function PhonePreview() {
   const state = useConfig()
   const dispatch = useDispatchConfig()
   const frameRef = useRef<HTMLDivElement | null>(null)
+  const [qrSelected, setQrSelected] = useState(false)
 
   const device = getDevice(state.deviceId)
   const def = getShader(state.shaderId)
@@ -88,6 +89,7 @@ export function PhonePreview() {
         className="phone-frame"
         ref={frameRef}
         style={{ aspectRatio: `${device.width} / ${device.height}` }}
+        onPointerDown={() => setQrSelected(false)}
       >
         <Shader
           key={def.id}
