@@ -18,6 +18,8 @@ export interface QrConfig {
   rounded: boolean
   colorMode: 'auto' | 'manual'
   manualColor: string
+  /** CSS mix-blend-mode / canvas composite op for the QR over the shader. */
+  blendMode: string
 }
 
 export interface ConfigState {
@@ -55,6 +57,7 @@ export const initialState: ConfigState = {
     rounded: true,
     colorMode: 'auto',
     manualColor: '#0b0b10',
+    blendMode: 'normal',
   },
   backgroundLuminance: null,
 }
