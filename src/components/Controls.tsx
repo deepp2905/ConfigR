@@ -2,14 +2,7 @@ import { useState } from 'react'
 import { useConfig, useDispatchConfig } from '../state/store'
 import { SHADERS, getShader } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
-
-/** Representative gradient for each style's visual picker tile (uses its first palette). */
-const STYLE_THUMB: Record<string, (c: string[]) => string> = {
-  'mesh-gradient': (c) => `radial-gradient(circle at 32% 28%, ${c[0]}, ${c[1]} 45%, ${c[2]})`,
-  warp: (c) => `linear-gradient(135deg, ${c[0]}, ${c[1]}, ${c[2]})`,
-  'grain-gradient': (c) => `linear-gradient(180deg, ${c[0]}, ${c[1]}, ${c[2]})`,
-  swirl: (c) => `conic-gradient(from 210deg, ${c[0]}, ${c[1]}, ${c[2]}, ${c[0]})`,
-}
+import { StyleTile } from './StyleTile'
 
 function Slider({
   label,
@@ -101,22 +94,24 @@ export function Controls() {
         </div>
 
         <div className="style-grid">
-          {SHADERS.map((s) => {
-            const colors = s.palettes[0].colors
-            const thumb = (STYLE_THUMB[s.id] ?? STYLE_THUMB.warp)(colors)
-            return (
-              <button
-                key={s.id}
-                className={`style-tile ${s.id === state.shaderId ? 'is-active' : ''}`}
-                onClick={() => dispatch({ type: 'SET_SHADER', shaderId: s.id })}
-              >
-                <span className="style-thumb" style={{ background: thumb }} />
-                <span className="style-name">{s.label}</span>
-              </button>
-            )
-          })}
+          {SHADERS.map((s) => (
+            <button
+              key={s.id}
+              className={`style-tile ${s.id === state.shaderId ? 'is-active' : ''}`}
+              onClick={() => dispatch({ type: 'SET_SHADER', shaderId: s.id })}
+            >
+              <StyleTile def={s} />
+              <span className="style-name">{s.label}</span>
+            </button>
+          ))}
         </div>
+      </div>
 
+      {/* Color — shader palette */}
+      <div className="section">
+        <div className="section-head">
+          <span className="section-label">Color</span>
+        </div>
         <div className="swatches">
           {def.palettes.map((p) => (
             <button
@@ -131,7 +126,39 @@ export function Controls() {
         </div>
       </div>
 
-      {/* ③ QR */}
+      {/* Fine-tune — power-user tweaking, de-emphasized */}
+      <details className="finetune">
+        <summary>
+          <span className="chevron" aria-hidden>
+            ▶
+          </span>
+          Fine-tune
+        </summary>
+        <div className="finetune-body">
+          {def.params.map((p) => (
+            <Slider
+              key={p.key}
+              label={p.label}
+              value={state.params[p.key] ?? p.default}
+              min={p.min}
+              max={p.max}
+              step={p.step}
+              onChange={(v) => dispatch({ type: 'SET_PARAM', key: p.key, value: v })}
+            />
+          ))}
+          <Slider
+            label="Seed"
+            value={state.seed}
+            min={0}
+            max={9999}
+            step={1}
+            format={(v) => String(Math.round(v))}
+            onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
+          />
+        </div>
+      </details>
+
+      {/* QR */}
       <div className="section">
         <div className="section-head">
           <span className="section-label">QR code</span>
@@ -140,8 +167,8 @@ export function Controls() {
           <Slider
             label="Size"
             value={state.qr.scale}
-            min={0.22}
-            max={0.5}
+            min={0.15}
+            max={0.6}
             step={0.01}
             format={(v) => `${Math.round(v * 100)}%`}
             onChange={(v) => dispatch({ type: 'SET_QR', patch: { scale: v } })}
@@ -187,38 +214,6 @@ export function Controls() {
           )}
         </div>
       </div>
-
-      {/* Fine-tune — power-user tweaking, de-emphasized */}
-      <details className="finetune">
-        <summary>
-          <span className="chevron" aria-hidden>
-            ▶
-          </span>
-          Fine-tune
-        </summary>
-        <div className="finetune-body">
-          {def.params.map((p) => (
-            <Slider
-              key={p.key}
-              label={p.label}
-              value={state.params[p.key] ?? p.default}
-              min={p.min}
-              max={p.max}
-              step={p.step}
-              onChange={(v) => dispatch({ type: 'SET_PARAM', key: p.key, value: v })}
-            />
-          ))}
-          <Slider
-            label="Seed"
-            value={state.seed}
-            min={0}
-            max={9999}
-            step={1}
-            format={(v) => String(Math.round(v))}
-            onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
-          />
-        </div>
-      </details>
 
       {error && <p className="error">{error}</p>}
 
