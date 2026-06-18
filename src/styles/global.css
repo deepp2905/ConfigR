@@ -114,11 +114,20 @@ button {
   height: auto;
 }
 
+.preview-url {
+  width: min(100%, 360px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
 .preview-meta {
   margin: 0;
   color: var(--muted-2);
   font-size: 12px;
   letter-spacing: 0.03em;
+  text-align: center;
 }
 
 /* ---------- Controls ---------- */
