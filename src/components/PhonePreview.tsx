@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useConfig, useDispatchConfig } from '../state/store'
-import { getDevice } from '../devices/presets'
+import { getDevice, DEVICE_PRESETS } from '../devices/presets'
 import { getShader, buildShaderProps } from '../shaders/registry'
 import { resolveQrColor, sampleRegionLuminance } from '../lib/qrColor'
 import { QrLayer } from './QrLayer'
@@ -83,18 +83,18 @@ export function PhonePreview() {
         <QrLayer url={state.url} qr={state.qr} color={qrColor} />
       </div>
 
-      <div className="preview-url">
-        <input
-          className="text-input"
-          type="url"
-          inputMode="url"
-          placeholder="https://your-link.com"
-          value={state.url}
-          onChange={(e) => dispatch({ type: 'SET_URL', url: e.target.value })}
-        />
-        <p className="preview-meta">
-          {state.url ? `${device.label} · ${device.width}×${device.height}` : 'Add a URL to make the QR scannable.'}
-        </p>
+      <div className="device-select">
+        <select
+          aria-label="Phone size"
+          value={state.deviceId}
+          onChange={(e) => dispatch({ type: 'SET_DEVICE', deviceId: e.target.value })}
+        >
+          {DEVICE_PRESETS.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.label} · {d.width}×{d.height}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   )

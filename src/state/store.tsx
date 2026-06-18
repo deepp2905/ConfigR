@@ -51,7 +51,7 @@ export const initialState: ConfigState = {
   qr: {
     scale: 0.36,
     posX: 0.5,
-    posY: 0.6,
+    posY: 0.5,
     rounded: true,
     colorMode: 'auto',
     manualColor: '#0b0b10',
