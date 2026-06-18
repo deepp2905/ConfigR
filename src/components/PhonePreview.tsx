@@ -98,18 +98,16 @@ export function PhonePreview() {
           frame={state.seed}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
         />
-        {normalizedUrl ? (
+        {normalizedUrl && (
           <QrLayer
             url={normalizedUrl}
             qr={state.qr}
             color={qrColor}
+            selected={qrSelected}
             frameRef={frameRef}
+            onSelect={() => setQrSelected(true)}
             onChange={(patch) => dispatch({ type: 'SET_QR', patch })}
           />
-        ) : (
-          <div className="qr-placeholder">
-            <span>Add a valid link to generate your QR</span>
-          </div>
         )}
       </div>
     </div>

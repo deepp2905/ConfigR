@@ -4,6 +4,16 @@ import { SHADERS, getShader } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
 
+const QR_BLEND: { value: string; label: string }[] = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'multiply', label: 'Multiply' },
+  { value: 'screen', label: 'Screen' },
+  { value: 'overlay', label: 'Overlay' },
+  { value: 'difference', label: 'Difference' },
+  { value: 'exclusion', label: 'Exclusion' },
+  { value: 'luminosity', label: 'Luminosity' },
+]
+
 function Slider({
   label,
   value,
@@ -155,6 +165,20 @@ export function Controls() {
             format={(v) => String(Math.round(v))}
             onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
           />
+          <label className="select-row">
+            <span>QR blend</span>
+            <select
+              className="select select-inline"
+              value={state.qr.blendMode}
+              onChange={(e) => dispatch({ type: 'SET_QR', patch: { blendMode: e.target.value } })}
+            >
+              {QR_BLEND.map((b) => (
+                <option key={b.value} value={b.value}>
+                  {b.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </details>
 

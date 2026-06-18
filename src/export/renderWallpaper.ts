@@ -92,8 +92,14 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
     const qx = Math.round(state.qr.posX * w - qrSize / 2)
     const qy = Math.round(state.qr.posY * h - qrSize / 2)
 
-    // Transparent QR drawn directly over the shader (no plate, no shadow).
+    // Transparent QR drawn directly over the shader (no plate, no shadow), honoring blend mode.
+    ctx.save()
+    ctx.globalCompositeOperation =
+      state.qr.blendMode === 'normal'
+        ? 'source-over'
+        : (state.qr.blendMode as GlobalCompositeOperation)
     ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
+    ctx.restore()
 
     const blob = await new Promise<Blob | null>((res) => out.toBlob(res, 'image/png'))
     if (!blob) throw new Error('PNG encode failed')
