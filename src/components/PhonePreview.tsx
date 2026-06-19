@@ -78,6 +78,13 @@ export function PhonePreview() {
           />
         )}
       </div>
+
+      <button
+        className="btn-randomize"
+        onClick={() => dispatch({ type: 'RANDOMIZE_BACKGROUND' })}
+      >
+        <span aria-hidden>⟳</span> Randomize
+      </button>
     </div>
   )
 }

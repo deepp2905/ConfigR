@@ -91,21 +91,13 @@ export function Controls() {
           value={state.url}
           onChange={(e) => dispatch({ type: 'SET_URL', url: e.target.value })}
         />
-        <p className="hero-hint">
-          {state.url ? 'This is where your QR code points.' : 'Add a URL to make the QR scannable.'}
-        </p>
+        {!state.url && <p className="hero-hint">Add a URL to make the QR scannable.</p>}
       </div>
 
       {/* ② Style — pick a vibe fast */}
       <div className="section">
         <div className="section-head">
           <span className="section-label">Style</span>
-          <button
-            className="mini-btn"
-            onClick={() => dispatch({ type: 'RANDOMIZE_BACKGROUND' })}
-          >
-            <span aria-hidden>⟳</span> Randomize
-          </button>
         </div>
 
         <div className="style-grid">
