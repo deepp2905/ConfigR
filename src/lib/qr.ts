@@ -1,5 +1,7 @@
 import QRCodeStyling from 'qr-code-styling'
 
+export type DotType = 'rounded' | 'square' | 'dots'
+
 export interface QrRenderOptions {
   data: string
   /** Pixel size of the square QR image. */
@@ -7,6 +9,8 @@ export interface QrRenderOptions {
   rounded: boolean
   /** Module (foreground) color; the background is transparent. */
   color: string
+  /** Override the module shape (defaults from `rounded`). */
+  dotType?: DotType
 }
 
 /**
@@ -15,6 +19,8 @@ export interface QrRenderOptions {
  */
 export async function renderQrBlob(opts: QrRenderOptions): Promise<Blob> {
   const margin = Math.round(opts.size * 0.04)
+  const dot: DotType = opts.dotType ?? (opts.rounded ? 'rounded' : 'square')
+  const corner = dot === 'square' ? 'square' : 'extra-rounded'
   const qr = new QRCodeStyling({
     type: 'canvas',
     width: opts.size,
@@ -23,9 +29,9 @@ export async function renderQrBlob(opts: QrRenderOptions): Promise<Blob> {
     margin,
     qrOptions: { errorCorrectionLevel: 'H' },
     backgroundOptions: { color: 'transparent' },
-    dotsOptions: { color: opts.color, type: opts.rounded ? 'rounded' : 'square' },
-    cornersSquareOptions: { color: opts.color, type: opts.rounded ? 'extra-rounded' : 'square' },
-    cornersDotOptions: { color: opts.color, type: opts.rounded ? 'dot' : 'square' },
+    dotsOptions: { color: opts.color, type: dot },
+    cornersSquareOptions: { color: opts.color, type: corner },
+    cornersDotOptions: { color: opts.color, type: dot === 'square' ? 'square' : 'dot' },
   })
   const raw = await qr.getRawData('png')
   if (!raw) throw new Error('QR generation failed')
@@ -36,13 +42,56 @@ export function blobToImage(blob: Blob): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(blob)
     const img = new Image()
-    img.onload = () => {
-      resolve(img)
-    }
+    img.onload = () => resolve(img)
     img.onerror = (e) => {
       URL.revokeObjectURL(url)
       reject(e)
     }
     img.src = url
   })
+}
+
+/** Render a QR straight to an HTMLImageElement. */
+export async function renderQrImage(opts: QrRenderOptions): Promise<HTMLImageElement> {
+  return blobToImage(await renderQrBlob(opts))
+}
+
+/**
+ * Produce an inverted-alpha QR: opaque everywhere except module-shaped holes. Used as a CSS
+ * mask (or canvas plate) for the "carved" treatment so the shader shows through the modules.
+ */
+export async function renderQrMaskUrl(opts: Omit<QrRenderOptions, 'color'>): Promise<string> {
+  const modules = await renderQrImage({ ...opts, color: '#000000' })
+  const c = document.createElement('canvas')
+  c.width = modules.width
+  c.height = modules.height
+  const ctx = c.getContext('2d')!
+  ctx.fillStyle = '#000'
+  ctx.fillRect(0, 0, c.width, c.height)
+  ctx.globalCompositeOperation = 'destination-out'
+  ctx.drawImage(modules, 0, 0)
+  return c.toDataURL()
+}
+
+let grainCanvas: HTMLCanvasElement | null = null
+
+/** A cached monochrome film-grain tile, generated once. */
+export function getGrainCanvas(): HTMLCanvasElement {
+  if (grainCanvas) return grainCanvas
+  const n = 160
+  const c = document.createElement('canvas')
+  c.width = n
+  c.height = n
+  const ctx = c.getContext('2d')!
+  const img = ctx.createImageData(n, n)
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255
+    img.data[i] = v
+    img.data[i + 1] = v
+    img.data[i + 2] = v
+    img.data[i + 3] = 255
+  }
+  ctx.putImageData(img, 0, 0)
+  grainCanvas = c
+  return c
 }

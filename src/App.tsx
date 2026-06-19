@@ -1,6 +1,7 @@
 import { StoreProvider } from './state/store'
 import { PhonePreview } from './components/PhonePreview'
 import { Controls } from './components/Controls'
+import { QrStyleMenu } from './components/QrStyleMenu'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Controls />
         </main>
       </div>
+      <QrStyleMenu />
     </StoreProvider>
   )
 }

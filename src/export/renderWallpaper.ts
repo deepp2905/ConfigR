@@ -4,7 +4,18 @@ import type { ConfigState } from '../state/store'
 import { getDevice } from '../devices/presets'
 import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { normalizeUrl } from '../lib/url'
-import { renderQrBlob, blobToImage } from '../lib/qr'
+import { renderQrImage, getGrainCanvas } from '../lib/qr'
+
+function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, r: number) {
+  const rr = Math.min(r, s / 2)
+  ctx.beginPath()
+  ctx.moveTo(x + rr, y)
+  ctx.arcTo(x + s, y, x + s, y + s, rr)
+  ctx.arcTo(x + s, y + s, x, y + s, rr)
+  ctx.arcTo(x, y + s, x, y, rr)
+  ctx.arcTo(x, y, x + s, y, rr)
+  ctx.closePath()
+}
 
 const nextFrame = () => new Promise<void>((r) => requestAnimationFrame(() => r()))
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
@@ -87,27 +98,73 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
       ctx.drawImage(shaderCanvas, 0, 0, w, h)
     }
 
-    const qrSize = Math.round(state.qr.scale * w)
-    const qrBlob = await renderQrBlob({
-      data: normalizeUrl(state.url) ?? state.url,
-      size: qrSize,
-      rounded: state.qr.rounded,
-      color: state.qr.color,
-    })
-    const qrImg = await blobToImage(qrBlob)
+    const data = normalizeUrl(state.url)
+    if (data) {
+      const style = state.qrStyle
+      const qrSize = Math.round(state.qr.scale * w)
+      const qx = Math.round(state.qr.posX * w - qrSize / 2)
+      const qy = Math.round(state.qr.posY * h - qrSize / 2)
+      const rad = state.qr.rounded ? qrSize * 0.07 : 0
+      const palette = getPalette(state.paletteId)
+      const ink =
+        style === 'duotone' ? palette.colors[0] : style === 'frosted' ? '#0b0b10' : state.qr.color
 
-    const qx = Math.round(state.qr.posX * w - qrSize / 2)
-    const qy = Math.round(state.qr.posY * h - qrSize / 2)
+      const qrImg = await renderQrImage({
+        data,
+        size: qrSize,
+        rounded: state.qr.rounded,
+        color: ink,
+        dotType: style === 'dots' ? 'dots' : state.qr.rounded ? 'rounded' : 'square',
+      })
 
-    // Transparent QR drawn over the shader, honoring opacity + blend mode.
-    ctx.save()
-    ctx.globalAlpha = state.qr.opacity
-    ctx.globalCompositeOperation =
-      state.qr.blendMode === 'normal'
-        ? 'source-over'
-        : (state.qr.blendMode as GlobalCompositeOperation)
-    ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
-    ctx.restore()
+      ctx.save()
+      ctx.globalAlpha = state.qr.opacity
+      if (style === 'carved') {
+        // Dark plate with module-shaped holes that reveal the shader.
+        ctx.save()
+        roundRectPath(ctx, qx, qy, qrSize, rad)
+        ctx.clip()
+        ctx.fillStyle = 'rgba(8,8,11,0.62)'
+        ctx.fillRect(qx, qy, qrSize, qrSize)
+        ctx.globalCompositeOperation = 'destination-out'
+        ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
+        ctx.restore()
+      } else if (style === 'frosted') {
+        // Frosted plate: blurred shader + white tint, clipped to a rounded square.
+        ctx.save()
+        roundRectPath(ctx, qx, qy, qrSize, rad)
+        ctx.clip()
+        ctx.filter = 'blur(10px)'
+        ctx.drawImage(shaderCanvas, qx - 16, qy - 16, qrSize + 32, qrSize + 32)
+        ctx.filter = 'none'
+        ctx.fillStyle = 'rgba(246,246,251,0.55)'
+        ctx.fillRect(qx, qy, qrSize, qrSize)
+        ctx.restore()
+        ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
+      } else {
+        // duotone / dots / grain modules, with optional overlay blend.
+        if (state.qr.blendMode === 'overlay') ctx.globalCompositeOperation = 'overlay'
+        ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
+      }
+      ctx.restore()
+    }
+
+    // Grain treatment: film grain over the whole wallpaper.
+    if (data && state.qrStyle === 'grain') {
+      const grain = getGrainCanvas()
+      ctx.save()
+      ctx.globalAlpha = 0.12
+      ctx.globalCompositeOperation = 'overlay'
+      const tile = Math.max(2, Math.round(w / 220))
+      const gw = grain.width * tile
+      const gh = grain.height * tile
+      for (let gx = 0; gx < w; gx += gw) {
+        for (let gy = 0; gy < h; gy += gh) {
+          ctx.drawImage(grain, gx, gy, gw, gh)
+        }
+      }
+      ctx.restore()
+    }
 
     const blob = await new Promise<Blob | null>((res) => out.toBlob(res, 'image/png'))
     if (!blob) throw new Error('PNG encode failed')

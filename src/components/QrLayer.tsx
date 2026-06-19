@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
-import { renderQrBlob } from '../lib/qr'
-import type { QrConfig } from '../state/store'
+import { renderQrImage, renderQrMaskUrl } from '../lib/qr'
+import type { QrConfig, QrStyle } from '../state/store'
 
 /** Preview-resolution QR; the export path regenerates at full native size. */
 const PREVIEW_QR_PX = 560
 const MIN_SCALE = 0.15
 const MAX_SCALE = 0.6
-/** Snap distance (fraction of frame) for center alignment. */
 const SNAP = 0.018
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
@@ -14,32 +13,67 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v
 type Corner = 'tl' | 'tr' | 'bl' | 'br'
 
 interface QrLayerProps {
-  /** Normalized URL to encode. */
   url: string
   qr: QrConfig
+  qrStyle: QrStyle
+  /** Active shader palette colors (for duotone ink). */
+  paletteColors: string[]
   selected: boolean
-  /** Frame aspect ratio (width / height), used to center the square box without a transform. */
   aspect: number
   frameRef: React.RefObject<HTMLDivElement | null>
   onSelect: () => void
   onChange: (patch: Partial<QrConfig>) => void
 }
 
-export function QrLayer({ url, qr, selected, aspect, frameRef, onSelect, onChange }: QrLayerProps) {
-  const [src, setSrc] = useState<string | null>(null)
-  const [guides, setGuides] = useState<{ v: boolean; h: boolean }>({ v: false, h: false })
-  const urlRef = useRef<string | null>(null)
+/** Module ink color for an image-based treatment. */
+function inkFor(style: QrStyle, qr: QrConfig, paletteColors: string[]): string {
+  if (style === 'duotone') return paletteColors[0] ?? qr.color
+  if (style === 'frosted') return '#0b0b10'
+  return qr.color // dots, grain
+}
 
+export function QrLayer({
+  url,
+  qr,
+  qrStyle,
+  paletteColors,
+  selected,
+  aspect,
+  frameRef,
+  onSelect,
+  onChange,
+}: QrLayerProps) {
+  const [imgSrc, setImgSrc] = useState<string | null>(null)
+  const [maskUrl, setMaskUrl] = useState<string | null>(null)
+  const [guides, setGuides] = useState<{ v: boolean; h: boolean }>({ v: false, h: false })
+  const revokeRef = useRef<string | null>(null)
+
+  const ink = inkFor(qrStyle, qr, paletteColors)
+
+  // Generate the QR resource for the current treatment.
   useEffect(() => {
     let cancelled = false
     const handle = setTimeout(async () => {
       try {
-        const blob = await renderQrBlob({ data: url, size: PREVIEW_QR_PX, rounded: qr.rounded, color: qr.color })
-        if (cancelled) return
-        const objectUrl = URL.createObjectURL(blob)
-        if (urlRef.current) URL.revokeObjectURL(urlRef.current)
-        urlRef.current = objectUrl
-        setSrc(objectUrl)
+        if (qrStyle === 'carved') {
+          const mask = await renderQrMaskUrl({ data: url, size: PREVIEW_QR_PX, rounded: qr.rounded })
+          if (cancelled) return
+          setMaskUrl(mask)
+          setImgSrc(null)
+        } else {
+          const img = await renderQrImage({
+            data: url,
+            size: PREVIEW_QR_PX,
+            rounded: qr.rounded,
+            color: ink,
+            dotType: qrStyle === 'dots' ? 'dots' : qr.rounded ? 'rounded' : 'square',
+          })
+          if (cancelled) return
+          if (revokeRef.current) URL.revokeObjectURL(revokeRef.current)
+          revokeRef.current = img.src
+          setImgSrc(img.src)
+          setMaskUrl(null)
+        }
       } catch {
         /* ignore transient generation errors */
       }
@@ -48,11 +82,11 @@ export function QrLayer({ url, qr, selected, aspect, frameRef, onSelect, onChang
       cancelled = true
       clearTimeout(handle)
     }
-  }, [url, qr.rounded, qr.color])
+  }, [url, qrStyle, qr.rounded, ink])
 
-  useEffect(() => () => void (urlRef.current && URL.revokeObjectURL(urlRef.current)), [])
+  useEffect(() => () => void (revokeRef.current && URL.revokeObjectURL(revokeRef.current)), [])
 
-  // ----- Direct manipulation: drag to move (with center snap), corner handles to resize -----
+  // ----- Drag to move (with center snap), corner handles to resize -----
   function beginDrag(e: ReactPointerEvent, mode: 'move' | Corner) {
     e.preventDefault()
     e.stopPropagation()
@@ -60,8 +94,6 @@ export function QrLayer({ url, qr, selected, aspect, frameRef, onSelect, onChang
     const rect = frameRef.current?.getBoundingClientRect()
     if (!rect) return
 
-    // Force the matching cursor across the whole page for the duration of the drag,
-    // so it stays consistent even when the pointer moves off the handle.
     const cursorClass =
       mode === 'move' ? 'qr-cur-grabbing' : mode === 'tl' || mode === 'br' ? 'qr-cur-nwse' : 'qr-cur-nesw'
     document.documentElement.classList.add(cursorClass)
@@ -101,11 +133,10 @@ export function QrLayer({ url, qr, selected, aspect, frameRef, onSelect, onChang
   }
 
   const corners: Corner[] = ['tl', 'tr', 'bl', 'br']
-
-  // Position by top-left (no CSS transform) so the box does NOT create a stacking context —
-  // otherwise the QR's mix-blend-mode would blend against the empty box, not the shader.
   const halfWpct = qr.scale * 50
   const halfHpct = qr.scale * 50 * aspect
+  const radius = qr.rounded ? '7%' : '0'
+  const blend = qr.blendMode === 'overlay' ? 'overlay' : undefined
 
   return (
     <>
@@ -122,24 +153,37 @@ export function QrLayer({ url, qr, selected, aspect, frameRef, onSelect, onChang
         role="button"
         aria-label="Drag to move the QR code"
       >
-        {src && (
-          <img
-            className="qr-img"
-            src={src}
-            alt="QR code"
-            draggable={false}
+        {qrStyle === 'carved' && maskUrl && (
+          <div
+            className="qr-carve"
             style={{
               opacity: qr.opacity,
-              mixBlendMode: qr.blendMode as React.CSSProperties['mixBlendMode'],
+              borderRadius: radius,
+              WebkitMaskImage: `url(${maskUrl})`,
+              maskImage: `url(${maskUrl})`,
             }}
           />
         )}
-        {corners.map((c) => (
-          <span
-            key={c}
-            className={`qr-handle ${c}`}
-            onPointerDown={(e) => beginDrag(e, c)}
+
+        {qrStyle === 'frosted' && imgSrc && (
+          <div className="qr-frost-wrap" style={{ opacity: qr.opacity }}>
+            <div className="qr-frost" style={{ borderRadius: radius }} />
+            <img className="qr-img" src={imgSrc} alt="QR code" draggable={false} />
+          </div>
+        )}
+
+        {(qrStyle === 'duotone' || qrStyle === 'dots' || qrStyle === 'grain') && imgSrc && (
+          <img
+            className="qr-img"
+            src={imgSrc}
+            alt="QR code"
+            draggable={false}
+            style={{ opacity: qr.opacity, mixBlendMode: blend }}
           />
+        )}
+
+        {corners.map((c) => (
+          <span key={c} className={`qr-handle ${c}`} onPointerDown={(e) => beginDrag(e, c)} />
         ))}
       </div>
     </>

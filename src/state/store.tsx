@@ -36,11 +36,24 @@ export interface ConfigState {
   seed: number
   /** Layer blur (preview px) applied to the shader only — never the QR. */
   blur: number
+  /** Immersive QR treatment. */
+  qrStyle: QrStyle
   qr: QrConfig
 }
 
 export const QR_WHITE = '#f6f6fb'
 export const QR_BLACK = '#0b0b10'
+
+/** Immersive QR treatments — how the QR sits within the shader. */
+export type QrStyle = 'carved' | 'duotone' | 'frosted' | 'dots' | 'grain'
+
+export const QR_STYLES: { id: QrStyle; label: string }[] = [
+  { id: 'duotone', label: 'Duotone' },
+  { id: 'carved', label: 'Carved' },
+  { id: 'frosted', label: 'Frosted' },
+  { id: 'dots', label: 'Dots' },
+  { id: 'grain', label: 'Grain' },
+]
 
 const MAX_SEED = 9999
 
@@ -58,6 +71,7 @@ export const initialState: ConfigState = {
   params: defaultParams(initialShader),
   seed: 2500,
   blur: 0,
+  qrStyle: 'duotone',
   qr: {
     scale: 0.36,
     posX: 0.5,
@@ -77,6 +91,7 @@ type Action =
   | { type: 'SET_PARAM'; key: string; value: number }
   | { type: 'SET_SEED'; value: number }
   | { type: 'SET_BLUR'; value: number }
+  | { type: 'SET_QR_STYLE'; value: QrStyle }
   | { type: 'SET_QR'; patch: Partial<QrConfig> }
   | { type: 'RANDOMIZE_BACKGROUND' }
 
@@ -108,6 +123,8 @@ function reducer(state: ConfigState, action: Action): ConfigState {
       return { ...state, seed: action.value }
     case 'SET_BLUR':
       return { ...state, blur: action.value }
+    case 'SET_QR_STYLE':
+      return { ...state, qrStyle: action.value }
     case 'SET_QR':
       return { ...state, qr: { ...state.qr, ...action.patch } }
     case 'RANDOMIZE_BACKGROUND': {

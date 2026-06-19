@@ -42,7 +42,7 @@ button {
 .app {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 22px 18px 40px;
+  padding: 22px 18px 110px;
 }
 
 .app-header {
@@ -144,6 +144,44 @@ html.qr-cur-nesw * {
   height: 100%;
   pointer-events: none;
   user-select: none;
+}
+
+/* Treatment: carved — dark plate with module-shaped holes revealing the shader. */
+.qr-carve {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 8, 11, 0.62);
+  pointer-events: none;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Treatment: frosted — blurred glass plate behind dark modules. */
+.qr-frost-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.qr-frost {
+  position: absolute;
+  inset: 0;
+  background: rgba(246, 246, 251, 0.5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Treatment: grain — film grain over the whole wallpaper. */
+.grain-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+  background-size: 180px 180px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Subtle corner handles, centered on the box corners; shown only when selected. */
@@ -758,6 +796,109 @@ input[type='range']::-moz-range-thumb {
   margin: 12px 0 0;
   color: var(--danger);
   font-size: 13px;
+}
+
+/* ---------- Floating QR-style switcher ---------- */
+.qr-style-menu {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  gap: 4px;
+  padding: 5px;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.55);
+}
+
+.qr-style-tab {
+  border: none;
+  background: transparent;
+  color: #0a0a0b;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.qr-style-tab:not(.is-active):hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.qr-style-tab.is-active {
+  background: #0a0a0b;
+  color: #fff;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  width: 100%;
+  max-width: 380px;
+  background: var(--menu);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.8);
+}
+
+.modal-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.modal-body {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-ghost {
+  border: 1px solid var(--hairline-strong);
+  background: transparent;
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background: var(--input-hover);
+}
+
+.btn-solid {
+  border: none;
+  background: #fff;
+  color: var(--ground);
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 /* ---------- Desktop ---------- */

@@ -3,21 +3,12 @@ import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK } from '../state/store
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
-import { Select } from './Select'
+import { NoQrModal } from './NoQrModal'
+import { isValidUrl } from '../lib/url'
 
 const QR_COLORS: { id: string; label: string; value: string }[] = [
   { id: 'white', label: 'White', value: QR_WHITE },
   { id: 'black', label: 'Black', value: QR_BLACK },
-]
-
-const QR_BLEND: { value: string; label: string }[] = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'multiply', label: 'Multiply' },
-  { value: 'screen', label: 'Screen' },
-  { value: 'overlay', label: 'Overlay' },
-  { value: 'difference', label: 'Difference' },
-  { value: 'exclusion', label: 'Exclusion' },
-  { value: 'luminosity', label: 'Luminosity' },
 ]
 
 function Slider({
@@ -62,8 +53,9 @@ export function Controls() {
 
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showNoQr, setShowNoQr] = useState(false)
 
-  async function handleExport() {
+  async function runExport() {
     setError(null)
     setExporting(true)
     try {
@@ -73,6 +65,15 @@ export function Controls() {
     } finally {
       setExporting(false)
     }
+  }
+
+  function handleExport() {
+    // No valid link → no QR will be in the wallpaper. Confirm before exporting.
+    if (!isValidUrl(state.url)) {
+      setShowNoQr(true)
+      return
+    }
+    void runExport()
   }
 
   return (
@@ -203,14 +204,22 @@ export function Controls() {
             onChange={(v) => dispatch({ type: 'SET_QR', patch: { opacity: v } })}
           />
 
-          <div className="select-row">
+          <div className="switch-row">
             <span>Blend</span>
-            <Select
-              ariaLabel="QR blend mode"
-              value={state.qr.blendMode}
-              options={QR_BLEND}
-              onChange={(blendMode) => dispatch({ type: 'SET_QR', patch: { blendMode } })}
-            />
+            <button
+              role="switch"
+              aria-checked={state.qr.blendMode === 'overlay'}
+              aria-label="Blend QR with background"
+              className={`switch ${state.qr.blendMode === 'overlay' ? 'on' : ''}`}
+              onClick={() =>
+                dispatch({
+                  type: 'SET_QR',
+                  patch: { blendMode: state.qr.blendMode === 'overlay' ? 'normal' : 'overlay' },
+                })
+              }
+            >
+              <span className="knob" />
+            </button>
           </div>
 
           <div className="switch-row">
@@ -235,6 +244,16 @@ export function Controls() {
           {exporting ? 'Rendering…' : 'Export PNG'}
         </button>
       </div>
+
+      {showNoQr && (
+        <NoQrModal
+          onProceed={() => {
+            setShowNoQr(false)
+            void runExport()
+          }}
+          onBack={() => setShowNoQr(false)}
+        />
+      )}
     </div>
   )
 }
