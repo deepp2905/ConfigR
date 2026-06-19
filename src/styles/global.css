@@ -158,30 +158,18 @@ html.qr-cur-nesw * {
   mask-repeat: no-repeat;
 }
 
-/* Treatment: frosted — blurred glass plate behind dark modules. */
-.qr-frost-wrap {
+/* Treatment: dynamic — carve from the shader. Gaps show a darkened+blurred shader;
+   module holes reveal the same shader crisp/bright behind. */
+.qr-dynamic {
   position: absolute;
   inset: 0;
   pointer-events: none;
-}
-
-.qr-frost {
-  position: absolute;
-  inset: 0;
-  background: rgba(246, 246, 251, 0.5);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-}
-
-/* Treatment: grain — film grain over the whole wallpaper. */
-.grain-overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-  opacity: 0.4;
-  background-size: 180px 180px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-backdrop-filter: blur(6px) brightness(0.42);
+  backdrop-filter: blur(6px) brightness(0.42);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 /* Subtle corner handles, centered on the box corners; shown only when selected. */

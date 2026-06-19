@@ -4,7 +4,7 @@ import type { ConfigState } from '../state/store'
 import { getDevice } from '../devices/presets'
 import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { normalizeUrl } from '../lib/url'
-import { renderQrImage, getGrainCanvas } from '../lib/qr'
+import { renderQrImage } from '../lib/qr'
 
 function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, r: number) {
   const rr = Math.min(r, s / 2)
@@ -106,8 +106,7 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
       const qy = Math.round(state.qr.posY * h - qrSize / 2)
       const rad = state.qr.rounded ? qrSize * 0.07 : 0
       const palette = getPalette(state.paletteId)
-      const ink =
-        style === 'duotone' ? palette.colors[0] : style === 'frosted' ? '#0b0b10' : state.qr.color
+      const ink = style === 'duotone' ? palette.colors[0] : state.qr.color
 
       const qrImg = await renderQrImage({
         data,
@@ -129,39 +128,29 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
         ctx.globalCompositeOperation = 'destination-out'
         ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
         ctx.restore()
-      } else if (style === 'frosted') {
-        // Frosted plate: blurred shader + white tint, clipped to a rounded square.
+      } else if (style === 'dynamic') {
+        // Carve the QR from the shader: gaps show a darkened+blurred shader, modules show
+        // the same shader crisp/full — the QR becomes part of the gradient.
         ctx.save()
         roundRectPath(ctx, qx, qy, qrSize, rad)
         ctx.clip()
-        ctx.filter = 'blur(10px)'
-        ctx.drawImage(shaderCanvas, qx - 16, qy - 16, qrSize + 32, qrSize + 32)
+        ctx.filter = 'blur(10px) brightness(0.42)'
+        ctx.drawImage(shaderCanvas, 0, 0, w, h)
         ctx.filter = 'none'
-        ctx.fillStyle = 'rgba(246,246,251,0.55)'
-        ctx.fillRect(qx, qy, qrSize, qrSize)
+        // Crisp shader, kept only where the modules are, drawn on top.
+        const tmp = document.createElement('canvas')
+        tmp.width = qrSize
+        tmp.height = qrSize
+        const tctx = tmp.getContext('2d')!
+        tctx.drawImage(shaderCanvas, 0, 0, shaderCanvas.width, shaderCanvas.height, -qx, -qy, w, h)
+        tctx.globalCompositeOperation = 'destination-in'
+        tctx.drawImage(qrImg, 0, 0, qrSize, qrSize)
+        ctx.drawImage(tmp, qx, qy)
         ctx.restore()
-        ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
       } else {
-        // duotone / dots / grain modules, with optional overlay blend.
+        // duotone / dots modules, with optional overlay blend.
         if (state.qr.blendMode === 'overlay') ctx.globalCompositeOperation = 'overlay'
         ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
-      }
-      ctx.restore()
-    }
-
-    // Grain treatment: film grain over the whole wallpaper.
-    if (data && state.qrStyle === 'grain') {
-      const grain = getGrainCanvas()
-      ctx.save()
-      ctx.globalAlpha = 0.12
-      ctx.globalCompositeOperation = 'overlay'
-      const tile = Math.max(2, Math.round(w / 220))
-      const gw = grain.width * tile
-      const gh = grain.height * tile
-      for (let gx = 0; gx < w; gx += gw) {
-        for (let gy = 0; gy < h; gy += gh) {
-          ctx.drawImage(grain, gx, gy, gw, gh)
-        }
       }
       ctx.restore()
     }

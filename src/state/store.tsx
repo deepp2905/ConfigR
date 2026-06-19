@@ -45,14 +45,13 @@ export const QR_WHITE = '#f6f6fb'
 export const QR_BLACK = '#0b0b10'
 
 /** Immersive QR treatments — how the QR sits within the shader. */
-export type QrStyle = 'carved' | 'duotone' | 'frosted' | 'dots' | 'grain'
+export type QrStyle = 'dynamic' | 'carved' | 'duotone' | 'dots'
 
 export const QR_STYLES: { id: QrStyle; label: string }[] = [
-  { id: 'duotone', label: 'Duotone' },
+  { id: 'dynamic', label: 'Dynamic' },
   { id: 'carved', label: 'Carved' },
-  { id: 'frosted', label: 'Frosted' },
+  { id: 'duotone', label: 'Duotone' },
   { id: 'dots', label: 'Dots' },
-  { id: 'grain', label: 'Grain' },
 ]
 
 const MAX_SEED = 9999
@@ -71,7 +70,7 @@ export const initialState: ConfigState = {
   params: defaultParams(initialShader),
   seed: 2500,
   blur: 0,
-  qrStyle: 'duotone',
+  qrStyle: 'dynamic',
   qr: {
     scale: 0.36,
     posX: 0.5,

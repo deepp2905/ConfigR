@@ -25,11 +25,10 @@ interface QrLayerProps {
   onChange: (patch: Partial<QrConfig>) => void
 }
 
-/** Module ink color for an image-based treatment. */
+/** Module ink color for an image-based treatment (duotone / dots). */
 function inkFor(style: QrStyle, qr: QrConfig, paletteColors: string[]): string {
   if (style === 'duotone') return paletteColors[0] ?? qr.color
-  if (style === 'frosted') return '#0b0b10'
-  return qr.color // dots, grain
+  return qr.color // dots
 }
 
 export function QrLayer({
@@ -55,7 +54,7 @@ export function QrLayer({
     let cancelled = false
     const handle = setTimeout(async () => {
       try {
-        if (qrStyle === 'carved') {
+        if (qrStyle === 'carved' || qrStyle === 'dynamic') {
           const mask = await renderQrMaskUrl({ data: url, size: PREVIEW_QR_PX, rounded: qr.rounded })
           if (cancelled) return
           setMaskUrl(mask)
@@ -165,14 +164,19 @@ export function QrLayer({
           />
         )}
 
-        {qrStyle === 'frosted' && imgSrc && (
-          <div className="qr-frost-wrap" style={{ opacity: qr.opacity }}>
-            <div className="qr-frost" style={{ borderRadius: radius }} />
-            <img className="qr-img" src={imgSrc} alt="QR code" draggable={false} />
-          </div>
+        {qrStyle === 'dynamic' && maskUrl && (
+          <div
+            className="qr-dynamic"
+            style={{
+              opacity: qr.opacity,
+              borderRadius: radius,
+              WebkitMaskImage: `url(${maskUrl})`,
+              maskImage: `url(${maskUrl})`,
+            }}
+          />
         )}
 
-        {(qrStyle === 'duotone' || qrStyle === 'dots' || qrStyle === 'grain') && imgSrc && (
+        {(qrStyle === 'duotone' || qrStyle === 'dots') && imgSrc && (
           <img
             className="qr-img"
             src={imgSrc}

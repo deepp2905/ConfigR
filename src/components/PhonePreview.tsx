@@ -86,7 +86,6 @@ export function PhonePreview() {
             onChange={(patch) => dispatch({ type: 'SET_QR', patch })}
           />
         )}
-        {normalizedUrl && state.qrStyle === 'grain' && <div className="grain-overlay" />}
       </div>
 
       <button
