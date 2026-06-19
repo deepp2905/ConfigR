@@ -38,6 +38,8 @@ export interface ShaderDef {
   params: BoundedParam[]
   /** Whether the shader accepts a `colorBack` uniform (others would leak it to the DOM). */
   acceptsColorBack?: boolean
+  /** Optional prop overrides used only for the picker thumbnail, so it reads well small. */
+  tile?: Record<string, unknown>
 }
 
 const PALETTES = {
@@ -69,6 +71,9 @@ export const SHADERS: ShaderDef[] = [
     label: 'Warp',
     Component: Warp as unknown as FC<Record<string, unknown>>,
     base: { shape: 'checks' },
+    // The default 'checks' warp reads as muddy blobs at thumbnail size; warped stripes
+    // convey the flowing-distortion feel far better.
+    tile: { shape: 'stripes', distortion: 0.45, swirl: 0.85, proportion: 0.4, scale: 0.85 },
     palettes: [PALETTES.aurora, PALETTES.sunset, PALETTES.ocean, PALETTES.configPop],
     params: [
       { key: 'distortion', label: 'Distortion', min: 0.1, max: 0.5, step: 0.02, default: 0.25 },

@@ -14,7 +14,7 @@ const NEUTRAL = {
 /** A live, static mini-render of the actual shader in grayscale. */
 export function StyleTile({ def }: { def: ShaderDef }) {
   const Shader = def.Component
-  const props = buildShaderProps(def, NEUTRAL, defaultParams(def))
+  const props = { ...buildShaderProps(def, NEUTRAL, defaultParams(def)), ...def.tile }
   return (
     <span className="style-thumb">
       <Shader
