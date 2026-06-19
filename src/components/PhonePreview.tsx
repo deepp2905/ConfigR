@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, useDispatchConfig } from '../state/store'
 import { getDevice, DEVICE_PRESETS } from '../devices/presets'
-import { getShader, buildShaderProps } from '../shaders/registry'
+import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { resolveQrColor, sampleRegionLuminance } from '../lib/qrColor'
 import { normalizeUrl } from '../lib/url'
 import { QrLayer } from './QrLayer'
@@ -14,7 +14,7 @@ export function PhonePreview() {
 
   const device = getDevice(state.deviceId)
   const def = getShader(state.shaderId)
-  const palette = def.palettes.find((p) => p.id === state.paletteId) ?? def.palettes[0]
+  const palette = getPalette(state.paletteId)
   const shaderProps = buildShaderProps(def, palette, state.params)
 
   const normalizedUrl = normalizeUrl(state.url)

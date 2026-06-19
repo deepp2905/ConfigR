@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useConfig, useDispatchConfig } from '../state/store'
-import { SHADERS, getShader } from '../shaders/registry'
+import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
 
@@ -53,7 +53,6 @@ export function Controls() {
   const state = useConfig()
   const dispatch = useDispatchConfig()
   const def = getShader(state.shaderId)
-  const palette = def.palettes.find((p) => p.id === state.paletteId) ?? def.palettes[0]
 
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -123,10 +122,10 @@ export function Controls() {
           <span className="section-label">Color</span>
         </div>
         <div className="swatches">
-          {def.palettes.map((p) => (
+          {ALL_PALETTES.map((p) => (
             <button
               key={p.id}
-              className={`swatch ${p.id === palette.id ? 'is-active' : ''}`}
+              className={`swatch ${p.id === state.paletteId ? 'is-active' : ''}`}
               title={p.label}
               aria-label={p.label}
               onClick={() => dispatch({ type: 'SET_PALETTE', paletteId: p.id })}

@@ -32,8 +32,6 @@ export interface ShaderDef {
   Component: FC<Record<string, unknown>>
   /** Static props always passed to the shader. */
   base: Record<string, unknown>
-  /** Curated palettes the user can pick between. */
-  palettes: Palette[]
   /** Tweakable, bounded numeric params surfaced as sliders. */
   params: BoundedParam[]
   /** Whether the shader accepts a `colorBack` uniform (others would leak it to the DOM). */
@@ -52,13 +50,29 @@ const PALETTES = {
   candy: { id: 'candy', label: 'Candy', colors: ['#ff5c8a', '#ff8fab', '#ffc2d1', '#22d3ee'] },
 } satisfies Record<string, Palette>
 
+/** Every palette is available for every shader. */
+export const ALL_PALETTES: Palette[] = [
+  PALETTES.configPop,
+  PALETTES.candy,
+  PALETTES.sunset,
+  PALETTES.ember,
+  PALETTES.aurora,
+  PALETTES.ocean,
+  PALETTES.mono,
+]
+
+export const DEFAULT_PALETTE_ID = ALL_PALETTES[0].id
+
+export function getPalette(id: string): Palette {
+  return ALL_PALETTES.find((p) => p.id === id) ?? ALL_PALETTES[0]
+}
+
 export const SHADERS: ShaderDef[] = [
   {
     id: 'mesh-gradient',
     label: 'Mesh',
     Component: MeshGradient as unknown as FC<Record<string, unknown>>,
     base: {},
-    palettes: [PALETTES.configPop, PALETTES.sunset, PALETTES.aurora, PALETTES.candy, PALETTES.mono],
     params: [
       { key: 'distortion', label: 'Distortion', min: 0.3, max: 1, step: 0.05, default: 0.8 },
       { key: 'swirl', label: 'Swirl', min: 0, max: 0.8, step: 0.05, default: 0.25 },
@@ -74,7 +88,6 @@ export const SHADERS: ShaderDef[] = [
     // The default 'checks' warp reads as muddy blobs at thumbnail size; warped stripes
     // convey the flowing-distortion feel far better.
     tile: { shape: 'stripes', distortion: 0.45, swirl: 0.85, proportion: 0.4, scale: 0.85 },
-    palettes: [PALETTES.aurora, PALETTES.sunset, PALETTES.ocean, PALETTES.configPop],
     params: [
       { key: 'distortion', label: 'Distortion', min: 0.1, max: 0.5, step: 0.02, default: 0.25 },
       { key: 'swirl', label: 'Swirl', min: 0.2, max: 1, step: 0.05, default: 0.6 },
@@ -89,7 +102,6 @@ export const SHADERS: ShaderDef[] = [
     label: 'Grain',
     Component: GrainGradient as unknown as FC<Record<string, unknown>>,
     base: { shape: 'wave' },
-    palettes: [PALETTES.sunset, PALETTES.ember, PALETTES.aurora, PALETTES.mono],
     params: [
       { key: 'softness', label: 'Softness', min: 0.3, max: 0.9, step: 0.05, default: 0.6 },
       { key: 'intensity', label: 'Intensity', min: 0.3, max: 0.8, step: 0.05, default: 0.5 },
@@ -103,7 +115,6 @@ export const SHADERS: ShaderDef[] = [
     label: 'Spiral',
     Component: Swirl as unknown as FC<Record<string, unknown>>,
     base: {},
-    palettes: [PALETTES.configPop, PALETTES.candy, PALETTES.sunset, PALETTES.mono],
     params: [
       { key: 'bandCount', label: 'Bands', min: 3, max: 9, step: 1, default: 5 },
       { key: 'twist', label: 'Twist', min: 0.1, max: 0.6, step: 0.05, default: 0.3 },

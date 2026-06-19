@@ -2,7 +2,9 @@ import { createContext, useContext, useReducer, type Dispatch, type ReactNode } 
 import { DEFAULT_DEVICE_ID } from '../devices/presets'
 import {
   DEFAULT_SHADER_ID,
+  DEFAULT_PALETTE_ID,
   SHADERS,
+  ALL_PALETTES,
   getShader,
   defaultParams,
   type ShaderDef,
@@ -47,7 +49,7 @@ export const initialState: ConfigState = {
   url: '',
   deviceId: DEFAULT_DEVICE_ID,
   shaderId: DEFAULT_SHADER_ID,
-  paletteId: initialShader.palettes[0].id,
+  paletteId: DEFAULT_PALETTE_ID,
   params: defaultParams(initialShader),
   seed: 2500,
   qr: {
@@ -74,7 +76,7 @@ type Action =
   | { type: 'RANDOMIZE_BACKGROUND' }
 
 function randomizeShader(def: ShaderDef): { paletteId: string; params: Record<string, number> } {
-  const palette = pick(def.palettes)
+  const palette = pick(ALL_PALETTES)
   const params: Record<string, number> = {}
   for (const p of def.params) {
     params[p.key] = snap(randFloat(p.min, p.max), p.step)
@@ -90,12 +92,8 @@ function reducer(state: ConfigState, action: Action): ConfigState {
       return { ...state, deviceId: action.deviceId }
     case 'SET_SHADER': {
       const def = getShader(action.shaderId)
-      return {
-        ...state,
-        shaderId: def.id,
-        paletteId: def.palettes[0].id,
-        params: defaultParams(def),
-      }
+      // Keep the current palette — every palette works with every shader.
+      return { ...state, shaderId: def.id, params: defaultParams(def) }
     }
     case 'SET_PALETTE':
       return { ...state, paletteId: action.paletteId }

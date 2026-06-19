@@ -345,20 +345,20 @@ button {
 }
 
 .swatch {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  border: 2px solid var(--hairline);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
   padding: 0;
-  transition: transform 0.1s ease, border-color 0.15s ease;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .swatch:hover {
-  transform: scale(1.06);
+  transform: scale(1.08);
 }
 
 .swatch.is-active {
-  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px #fff;
 }
 
 /* Randomize (quiet, neutral) */

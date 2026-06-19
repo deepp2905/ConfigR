@@ -2,7 +2,7 @@ import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import type { ConfigState } from '../state/store'
 import { getDevice } from '../devices/presets'
-import { getShader, buildShaderProps } from '../shaders/registry'
+import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { resolveQrColor } from '../lib/qrColor'
 import { renderQrBlob, blobToImage } from '../lib/qr'
 
@@ -43,7 +43,7 @@ function triggerDownload(blob: Blob, filename: string) {
 export async function exportWallpaper(state: ConfigState): Promise<void> {
   const device = getDevice(state.deviceId)
   const def = getShader(state.shaderId)
-  const palette = def.palettes.find((p) => p.id === state.paletteId) ?? def.palettes[0]
+  const palette = getPalette(state.paletteId)
   const shaderProps = buildShaderProps(def, palette, state.params)
   const { width: w, height: h } = device
 
