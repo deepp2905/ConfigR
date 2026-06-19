@@ -118,10 +118,11 @@ html.qr-cur-nesw * {
   cursor: nesw-resize !important;
 }
 
-/* Interactive QR box: drag to move, corner handles to resize */
+/* Interactive QR box: drag to move, corner handles to resize.
+   No transform here — a transform would create a stacking context and break the
+   QR's mix-blend-mode (it would blend against the empty box, not the shader). */
 .qr-box {
   position: absolute;
-  transform: translate(-50%, -50%);
   aspect-ratio: 1;
   cursor: grab;
   touch-action: none;

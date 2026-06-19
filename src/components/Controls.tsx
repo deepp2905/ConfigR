@@ -154,6 +154,15 @@ export function Controls() {
             />
           ))}
           <Slider
+            label="Blur"
+            value={state.blur}
+            min={0}
+            max={24}
+            step={1}
+            format={(v) => `${Math.round(v)}px`}
+            onChange={(v) => dispatch({ type: 'SET_BLUR', value: v })}
+          />
+          <Slider
             label="Seed"
             value={state.seed}
             min={0}

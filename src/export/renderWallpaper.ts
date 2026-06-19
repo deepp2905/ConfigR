@@ -73,7 +73,19 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
     const ctx = out.getContext('2d')
     if (!ctx) throw new Error('2D context unavailable')
 
-    ctx.drawImage(shaderCanvas, 0, 0, w, h)
+    // Blur the shader layer only, scaled from preview px to native px. Overfill the draw so
+    // blurred edges cover the full canvas instead of fading to transparent.
+    const frameW = (document.querySelector('.phone-frame') as HTMLElement | null)?.clientWidth
+    const blurPx = frameW ? state.blur * (w / frameW) : state.blur
+    if (blurPx > 0.5) {
+      const pad = Math.ceil(blurPx * 3)
+      ctx.save()
+      ctx.filter = `blur(${blurPx}px)`
+      ctx.drawImage(shaderCanvas, -pad, -pad, w + pad * 2, h + pad * 2)
+      ctx.restore()
+    } else {
+      ctx.drawImage(shaderCanvas, 0, 0, w, h)
+    }
 
     const qrSize = Math.round(state.qr.scale * w)
     const qrBlob = await renderQrBlob({

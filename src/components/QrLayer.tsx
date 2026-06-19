@@ -18,12 +18,14 @@ interface QrLayerProps {
   url: string
   qr: QrConfig
   selected: boolean
+  /** Frame aspect ratio (width / height), used to center the square box without a transform. */
+  aspect: number
   frameRef: React.RefObject<HTMLDivElement | null>
   onSelect: () => void
   onChange: (patch: Partial<QrConfig>) => void
 }
 
-export function QrLayer({ url, qr, selected, frameRef, onSelect, onChange }: QrLayerProps) {
+export function QrLayer({ url, qr, selected, aspect, frameRef, onSelect, onChange }: QrLayerProps) {
   const [src, setSrc] = useState<string | null>(null)
   const [guides, setGuides] = useState<{ v: boolean; h: boolean }>({ v: false, h: false })
   const urlRef = useRef<string | null>(null)
@@ -100,6 +102,11 @@ export function QrLayer({ url, qr, selected, frameRef, onSelect, onChange }: QrL
 
   const corners: Corner[] = ['tl', 'tr', 'bl', 'br']
 
+  // Position by top-left (no CSS transform) so the box does NOT create a stacking context —
+  // otherwise the QR's mix-blend-mode would blend against the empty box, not the shader.
+  const halfWpct = qr.scale * 50
+  const halfHpct = qr.scale * 50 * aspect
+
   return (
     <>
       {guides.v && <span className="qr-guide v" />}
@@ -107,8 +114,8 @@ export function QrLayer({ url, qr, selected, frameRef, onSelect, onChange }: QrL
       <div
         className={`qr-box ${selected ? 'is-selected' : ''}`}
         style={{
-          left: `${qr.posX * 100}%`,
-          top: `${qr.posY * 100}%`,
+          left: `calc(${qr.posX * 100}% - ${halfWpct}%)`,
+          top: `calc(${qr.posY * 100}% - ${halfHpct}%)`,
           width: `${qr.scale * 100}%`,
         }}
         onPointerDown={(e) => beginDrag(e, 'move')}

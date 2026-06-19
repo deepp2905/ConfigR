@@ -34,6 +34,8 @@ export interface ConfigState {
   params: Record<string, number>
   /** Deterministic frame offset for the (static) shader — acts as a pattern seed. */
   seed: number
+  /** Layer blur (preview px) applied to the shader only — never the QR. */
+  blur: number
   qr: QrConfig
 }
 
@@ -55,6 +57,7 @@ export const initialState: ConfigState = {
   paletteId: DEFAULT_PALETTE_ID,
   params: defaultParams(initialShader),
   seed: 2500,
+  blur: 0,
   qr: {
     scale: 0.36,
     posX: 0.5,
@@ -73,6 +76,7 @@ type Action =
   | { type: 'SET_PALETTE'; paletteId: string }
   | { type: 'SET_PARAM'; key: string; value: number }
   | { type: 'SET_SEED'; value: number }
+  | { type: 'SET_BLUR'; value: number }
   | { type: 'SET_QR'; patch: Partial<QrConfig> }
   | { type: 'RANDOMIZE_BACKGROUND' }
 
@@ -102,6 +106,8 @@ function reducer(state: ConfigState, action: Action): ConfigState {
       return { ...state, params: { ...state.params, [action.key]: action.value } }
     case 'SET_SEED':
       return { ...state, seed: action.value }
+    case 'SET_BLUR':
+      return { ...state, blur: action.value }
     case 'SET_QR':
       return { ...state, qr: { ...state.qr, ...action.patch } }
     case 'RANDOMIZE_BACKGROUND': {
