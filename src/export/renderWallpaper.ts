@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import type { ConfigState } from '../state/store'
 import { getDevice } from '../devices/presets'
 import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
-import { resolveQrColor } from '../lib/qrColor'
+import { normalizeUrl } from '../lib/url'
 import { renderQrBlob, blobToImage } from '../lib/qr'
 
 const nextFrame = () => new Promise<void>((r) => requestAnimationFrame(() => r()))
@@ -75,25 +75,21 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
 
     ctx.drawImage(shaderCanvas, 0, 0, w, h)
 
-    const color = resolveQrColor({
-      mode: state.qr.colorMode,
-      manualColor: state.qr.manualColor,
-      backgroundLuminance: state.backgroundLuminance,
-    })
     const qrSize = Math.round(state.qr.scale * w)
     const qrBlob = await renderQrBlob({
-      data: state.url,
+      data: normalizeUrl(state.url) ?? state.url,
       size: qrSize,
       rounded: state.qr.rounded,
-      color,
+      color: state.qr.color,
     })
     const qrImg = await blobToImage(qrBlob)
 
     const qx = Math.round(state.qr.posX * w - qrSize / 2)
     const qy = Math.round(state.qr.posY * h - qrSize / 2)
 
-    // Transparent QR drawn directly over the shader (no plate, no shadow), honoring blend mode.
+    // Transparent QR drawn over the shader, honoring opacity + blend mode.
     ctx.save()
+    ctx.globalAlpha = state.qr.opacity
     ctx.globalCompositeOperation =
       state.qr.blendMode === 'normal'
         ? 'source-over'

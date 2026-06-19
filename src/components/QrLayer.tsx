@@ -17,14 +17,13 @@ interface QrLayerProps {
   /** Normalized URL to encode. */
   url: string
   qr: QrConfig
-  color: string
   selected: boolean
   frameRef: React.RefObject<HTMLDivElement | null>
   onSelect: () => void
   onChange: (patch: Partial<QrConfig>) => void
 }
 
-export function QrLayer({ url, qr, color, selected, frameRef, onSelect, onChange }: QrLayerProps) {
+export function QrLayer({ url, qr, selected, frameRef, onSelect, onChange }: QrLayerProps) {
   const [src, setSrc] = useState<string | null>(null)
   const [guides, setGuides] = useState<{ v: boolean; h: boolean }>({ v: false, h: false })
   const urlRef = useRef<string | null>(null)
@@ -33,7 +32,7 @@ export function QrLayer({ url, qr, color, selected, frameRef, onSelect, onChange
     let cancelled = false
     const handle = setTimeout(async () => {
       try {
-        const blob = await renderQrBlob({ data: url, size: PREVIEW_QR_PX, rounded: qr.rounded, color })
+        const blob = await renderQrBlob({ data: url, size: PREVIEW_QR_PX, rounded: qr.rounded, color: qr.color })
         if (cancelled) return
         const objectUrl = URL.createObjectURL(blob)
         if (urlRef.current) URL.revokeObjectURL(urlRef.current)
@@ -47,7 +46,7 @@ export function QrLayer({ url, qr, color, selected, frameRef, onSelect, onChange
       cancelled = true
       clearTimeout(handle)
     }
-  }, [url, qr.rounded, color])
+  }, [url, qr.rounded, qr.color])
 
   useEffect(() => () => void (urlRef.current && URL.revokeObjectURL(urlRef.current)), [])
 
@@ -115,7 +114,10 @@ export function QrLayer({ url, qr, color, selected, frameRef, onSelect, onChange
             src={src}
             alt="QR code"
             draggable={false}
-            style={{ mixBlendMode: qr.blendMode as React.CSSProperties['mixBlendMode'] }}
+            style={{
+              opacity: qr.opacity,
+              mixBlendMode: qr.blendMode as React.CSSProperties['mixBlendMode'],
+            }}
           />
         )}
         {corners.map((c) => (

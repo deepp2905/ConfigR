@@ -1,8 +1,13 @@
 import { useState } from 'react'
-import { useConfig, useDispatchConfig } from '../state/store'
+import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK } from '../state/store'
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
+
+const QR_COLORS: { id: string; label: string; value: string }[] = [
+  { id: 'white', label: 'White', value: QR_WHITE },
+  { id: 'black', label: 'Black', value: QR_BLACK },
+]
 
 const QR_BLEND: { value: string; label: string }[] = [
   { value: 'normal', label: 'Normal' },
@@ -164,8 +169,40 @@ export function Controls() {
             format={(v) => String(Math.round(v))}
             onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
           />
+        </div>
+      </details>
+
+      {/* QR */}
+      <div className="section">
+        <div className="section-head">
+          <span className="section-label">QR code</span>
+        </div>
+        <div className="field-stack">
+          <div className="swatches">
+            {QR_COLORS.map((c) => (
+              <button
+                key={c.id}
+                className={`swatch qr-dot ${state.qr.color === c.value ? 'is-active' : ''}`}
+                title={c.label}
+                aria-label={c.label}
+                onClick={() => dispatch({ type: 'SET_QR', patch: { color: c.value } })}
+                style={{ background: c.value }}
+              />
+            ))}
+          </div>
+
+          <Slider
+            label="Opacity"
+            value={state.qr.opacity}
+            min={0.1}
+            max={1}
+            step={0.05}
+            format={(v) => `${Math.round(v * 100)}%`}
+            onChange={(v) => dispatch({ type: 'SET_QR', patch: { opacity: v } })}
+          />
+
           <label className="select-row">
-            <span>QR blend</span>
+            <span>Blend</span>
             <select
               className="select select-inline"
               value={state.qr.blendMode}
@@ -178,63 +215,19 @@ export function Controls() {
               ))}
             </select>
           </label>
-        </div>
-      </details>
 
-      {/* QR */}
-      <div className="section">
-        <div className="section-head">
-          <span className="section-label">QR code</span>
-        </div>
-        <div className="field-stack">
-          <Slider
-            label="Size"
-            value={state.qr.scale}
-            min={0.15}
-            max={0.6}
-            step={0.01}
-            format={(v) => `${Math.round(v * 100)}%`}
-            onChange={(v) => dispatch({ type: 'SET_QR', patch: { scale: v } })}
-          />
-
-          <label className="toggle">
-            <input
-              type="checkbox"
-              checked={state.qr.rounded}
-              onChange={(e) => dispatch({ type: 'SET_QR', patch: { rounded: e.target.checked } })}
-            />
-            <span>Rounded modules</span>
-          </label>
-
-          <div className="segmented">
+          <div className="switch-row">
+            <span>Rounded corners</span>
             <button
-              className={state.qr.colorMode === 'auto' ? 'is-active' : ''}
-              onClick={() => dispatch({ type: 'SET_QR', patch: { colorMode: 'auto' } })}
+              role="switch"
+              aria-checked={state.qr.rounded}
+              aria-label="Rounded corners"
+              className={`switch ${state.qr.rounded ? 'on' : ''}`}
+              onClick={() => dispatch({ type: 'SET_QR', patch: { rounded: !state.qr.rounded } })}
             >
-              Auto color
-            </button>
-            <button
-              className={state.qr.colorMode === 'manual' ? 'is-active' : ''}
-              onClick={() => dispatch({ type: 'SET_QR', patch: { colorMode: 'manual' } })}
-            >
-              Manual
+              <span className="knob" />
             </button>
           </div>
-
-          {state.qr.colorMode === 'manual' ? (
-            <label className="color-row">
-              <span>QR color</span>
-              <input
-                type="color"
-                value={state.qr.manualColor}
-                onChange={(e) =>
-                  dispatch({ type: 'SET_QR', patch: { manualColor: e.target.value } })
-                }
-              />
-            </label>
-          ) : (
-            <p className="hint">QR color adapts to the background for contrast.</p>
-          )}
         </div>
       </div>
 

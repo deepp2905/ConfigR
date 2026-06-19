@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useConfig, useDispatchConfig } from '../state/store'
 import { getDevice, DEVICE_PRESETS } from '../devices/presets'
 import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
-import { resolveQrColor, sampleRegionLuminance } from '../lib/qrColor'
 import { normalizeUrl } from '../lib/url'
 import { QrLayer } from './QrLayer'
 
@@ -18,54 +17,14 @@ export function PhonePreview() {
   const shaderProps = buildShaderProps(def, palette, state.params)
 
   const normalizedUrl = normalizeUrl(state.url)
-  const paramsKey = JSON.stringify(state.params)
+  const wasValidRef = useRef(false)
 
-  // Sample the shader luminance behind the QR for adaptive coloring. The shader is static,
-  // so wait two frames for it to repaint with the new uniforms before reading pixels.
+  // Select the QR (show its outline + handles) the moment it's first created.
   useEffect(() => {
-    let raf1 = 0
-    let raf2 = 0
-    raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => {
-        const canvas = frameRef.current?.querySelector('canvas') as HTMLCanvasElement | null
-        if (!canvas) return
-        const aspect = device.width / device.height
-        const qrH = state.qr.scale * aspect
-        const lum = sampleRegionLuminance(canvas, {
-          x: state.qr.posX - state.qr.scale / 2,
-          y: state.qr.posY - qrH / 2,
-          w: state.qr.scale,
-          h: qrH,
-        })
-        dispatch({ type: 'SET_BG_LUMINANCE', value: lum })
-      })
-    })
-    return () => {
-      cancelAnimationFrame(raf1)
-      cancelAnimationFrame(raf2)
-    }
-  }, [
-    state.shaderId,
-    state.paletteId,
-    paramsKey,
-    state.seed,
-    state.qr.scale,
-    state.qr.posX,
-    state.qr.posY,
-    device.width,
-    device.height,
-    dispatch,
-  ])
-
-  const qrColor = useMemo(
-    () =>
-      resolveQrColor({
-        mode: state.qr.colorMode,
-        manualColor: state.qr.manualColor,
-        backgroundLuminance: state.backgroundLuminance,
-      }),
-    [state.qr.colorMode, state.qr.manualColor, state.backgroundLuminance],
-  )
+    const valid = normalizedUrl !== null
+    if (valid && !wasValidRef.current) setQrSelected(true)
+    wasValidRef.current = valid
+  }, [normalizedUrl])
 
   const Shader = def.Component
 
@@ -102,7 +61,6 @@ export function PhonePreview() {
           <QrLayer
             url={normalizedUrl}
             qr={state.qr}
-            color={qrColor}
             selected={qrSelected}
             frameRef={frameRef}
             onSelect={() => setQrSelected(true)}

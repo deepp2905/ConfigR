@@ -18,8 +18,10 @@ export interface QrConfig {
   posX: number
   posY: number
   rounded: boolean
-  colorMode: 'auto' | 'manual'
-  manualColor: string
+  /** Module color — black or white. */
+  color: string
+  /** 0..1 opacity of the QR over the shader. */
+  opacity: number
   /** CSS mix-blend-mode / canvas composite op for the QR over the shader. */
   blendMode: string
 }
@@ -33,9 +35,10 @@ export interface ConfigState {
   /** Deterministic frame offset for the (static) shader — acts as a pattern seed. */
   seed: number
   qr: QrConfig
-  /** Luminance of the shader behind the QR (sampled from the preview), for auto color. */
-  backgroundLuminance: number | null
 }
+
+export const QR_WHITE = '#f6f6fb'
+export const QR_BLACK = '#0b0b10'
 
 const MAX_SEED = 9999
 
@@ -57,11 +60,10 @@ export const initialState: ConfigState = {
     posX: 0.5,
     posY: 0.5,
     rounded: true,
-    colorMode: 'auto',
-    manualColor: '#0b0b10',
+    color: QR_WHITE,
+    opacity: 1,
     blendMode: 'normal',
   },
-  backgroundLuminance: null,
 }
 
 type Action =
@@ -72,7 +74,6 @@ type Action =
   | { type: 'SET_PARAM'; key: string; value: number }
   | { type: 'SET_SEED'; value: number }
   | { type: 'SET_QR'; patch: Partial<QrConfig> }
-  | { type: 'SET_BG_LUMINANCE'; value: number | null }
   | { type: 'RANDOMIZE_BACKGROUND' }
 
 function randomizeShader(def: ShaderDef): { paletteId: string; params: Record<string, number> } {
@@ -103,8 +104,6 @@ function reducer(state: ConfigState, action: Action): ConfigState {
       return { ...state, seed: action.value }
     case 'SET_QR':
       return { ...state, qr: { ...state.qr, ...action.patch } }
-    case 'SET_BG_LUMINANCE':
-      return { ...state, backgroundLuminance: action.value }
     case 'RANDOMIZE_BACKGROUND': {
       const def = pick(SHADERS)
       const { paletteId, params } = randomizeShader(def)
