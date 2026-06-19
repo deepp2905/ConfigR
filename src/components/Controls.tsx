@@ -3,6 +3,7 @@ import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK } from '../state/store
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
+import { Select } from './Select'
 
 const QR_COLORS: { id: string; label: string; value: string }[] = [
   { id: 'white', label: 'White', value: QR_WHITE },
@@ -201,20 +202,15 @@ export function Controls() {
             onChange={(v) => dispatch({ type: 'SET_QR', patch: { opacity: v } })}
           />
 
-          <label className="select-row">
+          <div className="select-row">
             <span>Blend</span>
-            <select
-              className="select select-inline"
+            <Select
+              ariaLabel="QR blend mode"
               value={state.qr.blendMode}
-              onChange={(e) => dispatch({ type: 'SET_QR', patch: { blendMode: e.target.value } })}
-            >
-              {QR_BLEND.map((b) => (
-                <option key={b.value} value={b.value}>
-                  {b.label}
-                </option>
-              ))}
-            </select>
-          </label>
+              options={QR_BLEND}
+              onChange={(blendMode) => dispatch({ type: 'SET_QR', patch: { blendMode } })}
+            />
+          </div>
 
           <div className="switch-row">
             <span>Rounded corners</span>

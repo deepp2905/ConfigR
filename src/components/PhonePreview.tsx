@@ -4,6 +4,7 @@ import { getDevice, DEVICE_PRESETS } from '../devices/presets'
 import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { normalizeUrl } from '../lib/url'
 import { QrLayer } from './QrLayer'
+import { Select } from './Select'
 
 export function PhonePreview() {
   const state = useConfig()
@@ -42,17 +43,16 @@ export function PhonePreview() {
   return (
     <div className="preview-stage">
       <div className="device-select">
-        <select
-          aria-label="Phone size"
+        <Select
+          variant="pill"
+          ariaLabel="Phone size"
           value={state.deviceId}
-          onChange={(e) => dispatch({ type: 'SET_DEVICE', deviceId: e.target.value })}
-        >
-          {DEVICE_PRESETS.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.label} · {d.width}×{d.height}
-            </option>
-          ))}
-        </select>
+          onChange={(deviceId) => dispatch({ type: 'SET_DEVICE', deviceId })}
+          options={DEVICE_PRESETS.map((d) => ({
+            value: d.id,
+            label: `${d.label} · ${d.width}×${d.height}`,
+          }))}
+        />
       </div>
 
       <div
