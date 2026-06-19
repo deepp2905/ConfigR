@@ -58,6 +58,12 @@ export function QrLayer({ url, qr, selected, frameRef, onSelect, onChange }: QrL
     const rect = frameRef.current?.getBoundingClientRect()
     if (!rect) return
 
+    // Force the matching cursor across the whole page for the duration of the drag,
+    // so it stays consistent even when the pointer moves off the handle.
+    const cursorClass =
+      mode === 'move' ? 'qr-cur-grabbing' : mode === 'tl' || mode === 'br' ? 'qr-cur-nwse' : 'qr-cur-nesw'
+    document.documentElement.classList.add(cursorClass)
+
     const startScale = qr.scale
     const startCenterX = qr.posX
     const startCenterY = qr.posY
@@ -84,6 +90,7 @@ export function QrLayer({ url, qr, selected, frameRef, onSelect, onChange }: QrL
     }
     const onUp = () => {
       setGuides({ v: false, h: false })
+      document.documentElement.classList.remove(cursorClass)
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerup', onUp)
     }

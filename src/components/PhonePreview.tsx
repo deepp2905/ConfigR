@@ -26,6 +26,17 @@ export function PhonePreview() {
     wasValidRef.current = valid
   }, [normalizedUrl])
 
+  // While selected, a pointer-down anywhere outside the QR (the whole viewport) deselects it.
+  useEffect(() => {
+    if (!qrSelected) return
+    const onDown = (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null
+      if (!target?.closest?.('.qr-box')) setQrSelected(false)
+    }
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
+  }, [qrSelected])
+
   const Shader = def.Component
 
   return (
@@ -48,7 +59,6 @@ export function PhonePreview() {
         className="phone-frame"
         ref={frameRef}
         style={{ aspectRatio: `${device.width} / ${device.height}` }}
-        onPointerDown={() => setQrSelected(false)}
       >
         <Shader
           key={def.id}

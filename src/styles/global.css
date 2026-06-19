@@ -103,6 +103,20 @@ button {
     0 24px 60px -24px rgba(0, 0, 0, 0.8);
 }
 
+/* Keep one cursor across the whole page during a QR drag/resize, even off the handle. */
+html.qr-cur-grabbing,
+html.qr-cur-grabbing * {
+  cursor: grabbing !important;
+}
+html.qr-cur-nwse,
+html.qr-cur-nwse * {
+  cursor: nwse-resize !important;
+}
+html.qr-cur-nesw,
+html.qr-cur-nesw * {
+  cursor: nesw-resize !important;
+}
+
 /* Interactive QR box: drag to move, corner handles to resize */
 .qr-box {
   position: absolute;
@@ -282,8 +296,8 @@ button {
 }
 
 .hero-input:focus {
-  border-color: var(--accent-a);
-  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.18);
+  border-color: var(--text-2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
 .hero-hint {
@@ -324,7 +338,7 @@ button {
 
 .style-tile.is-active .style-thumb {
   border-color: transparent;
-  box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px var(--accent-a);
+  box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px #fff;
 }
 
 .style-name {
@@ -481,20 +495,22 @@ input[type='range'] {
 
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid var(--accent-a);
+  border: none;
+  box-shadow: 0 0 0 1px var(--hairline-strong), 0 2px 5px rgba(0, 0, 0, 0.5);
   cursor: grab;
 }
 
 input[type='range']::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid var(--accent-a);
+  border: none;
+  box-shadow: 0 0 0 1px var(--hairline-strong), 0 2px 5px rgba(0, 0, 0, 0.5);
   cursor: grab;
 }
 
