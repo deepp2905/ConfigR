@@ -4,7 +4,7 @@ import type { QrConfig, QrStyle } from '../state/store'
 
 /** Preview-resolution QR; the export path regenerates at full native size. */
 const PREVIEW_QR_PX = 560
-const MIN_SCALE = 0.15
+const MIN_SCALE = 0.1875
 const MAX_SCALE = 0.6
 const SNAP = 0.018
 
@@ -114,7 +114,13 @@ export function QrLayer({
       } else {
         const cx = startCenterX * rect.width
         const cy = startCenterY * rect.height
-        const half = Math.max(Math.abs(ev.clientX - rect.left - cx), Math.abs(ev.clientY - rect.top - cy))
+        const px = ev.clientX - rect.left
+        const py = ev.clientY - rect.top
+        // Use the pointer's *outward* distance for the dragged corner (signed), so dragging
+        // past the center clamps to the minimum size instead of growing again.
+        const dx = mode === 'tr' || mode === 'br' ? px - cx : cx - px
+        const dy = mode === 'bl' || mode === 'br' ? py - cy : cy - py
+        const half = Math.max(dx, dy)
         onChange({ scale: clamp((2 * half) / rect.width, MIN_SCALE, MAX_SCALE) })
       }
     }
