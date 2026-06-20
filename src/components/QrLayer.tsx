@@ -4,8 +4,8 @@ import type { QrConfig, QrStyle } from '../state/store'
 
 /** Preview-resolution QR; the export path regenerates at full native size. */
 const PREVIEW_QR_PX = 560
-const MIN_SCALE = 0.1875
-const MAX_SCALE = 0.6
+const MIN_SCALE = 0.25
+const MAX_SCALE = 0.5
 const SNAP = 0.018
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
