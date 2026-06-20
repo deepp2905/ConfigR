@@ -6,6 +6,15 @@ import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { normalizeUrl } from '../lib/url'
 import { renderQrImage } from '../lib/qr'
 
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img)
+    img.onerror = reject
+    img.src = src
+  })
+}
+
 function rgba(hex: string, a: number): string {
   let h = hex.replace('#', '')
   if (h.length === 3) h = h.split('').map((c) => c + c).join('')
@@ -143,6 +152,32 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
       if (state.qr.blendMode === 'overlay') ctx.globalCompositeOperation = 'overlay'
       ctx.drawImage(qc, qx, qy)
       ctx.restore()
+    }
+
+    // Config wordmark watermark — half width, bottom-center, 16px (scaled) gap, Overlay blend.
+    try {
+      const logo = await loadImage('/config.svg')
+      const frameW = (document.querySelector('.phone-frame') as HTMLElement | null)?.clientWidth
+      const logoW = Math.round(w * 0.5)
+      const logoH = Math.round(logoW * (197 / 870))
+      const gap = Math.round(16 * (frameW ? w / frameW : 3))
+      const lx = Math.round((w - logoW) / 2)
+      const ly = h - logoH - gap
+      // Recolor the glyph white, preserving its alpha.
+      const lc = document.createElement('canvas')
+      lc.width = logoW
+      lc.height = logoH
+      const lcx = lc.getContext('2d')!
+      lcx.drawImage(logo, 0, 0, logoW, logoH)
+      lcx.globalCompositeOperation = 'source-in'
+      lcx.fillStyle = '#ffffff'
+      lcx.fillRect(0, 0, logoW, logoH)
+      ctx.save()
+      ctx.globalCompositeOperation = 'overlay'
+      ctx.drawImage(lc, lx, ly)
+      ctx.restore()
+    } catch {
+      /* logo is decorative; skip if it fails to load */
     }
 
     const blob = await new Promise<Blob | null>((res) => out.toBlob(res, 'image/png'))

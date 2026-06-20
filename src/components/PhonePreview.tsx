@@ -79,6 +79,7 @@ export function PhonePreview() {
             onChange={(patch) => dispatch({ type: 'SET_QR', patch })}
           />
         )}
+        <div className="config-mark" aria-hidden />
       </div>
 
       <button

@@ -118,6 +118,21 @@ html.qr-cur-nesw * {
   cursor: nesw-resize !important;
 }
 
+/* Config wordmark watermark — half width, bottom-center, Overlay blend.
+   Centered via left:25% (not transform) so mix-blend-mode blends with the shader. */
+.config-mark {
+  position: absolute;
+  left: 25%;
+  bottom: 16px;
+  width: 50%;
+  aspect-ratio: 870 / 197;
+  background: #fff;
+  -webkit-mask: url(/config.svg) center / contain no-repeat;
+  mask: url(/config.svg) center / contain no-repeat;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
 /* Interactive QR box: drag to move, corner handles to resize.
    No transform here — a transform would create a stacking context and break the
    QR's mix-blend-mode (it would blend against the empty box, not the shader). */
