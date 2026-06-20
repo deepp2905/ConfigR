@@ -174,76 +174,84 @@ export function Controls() {
         <div className="section-head">
           <span className="section-label">QR code</span>
         </div>
-        <div className="field-stack">
-          <div className="swatches">
-            {QR_COLORS.map((c) => (
+        <div className="qr-fields">
+          <div className="qr-field">
+            <span className="qr-field-label">Color</span>
+            <div className="swatches">
+              {QR_COLORS.map((c) => (
+                <button
+                  key={c.id}
+                  className={`swatch qr-dot ${state.qr.color === c.value ? 'is-active' : ''}`}
+                  title={c.label}
+                  aria-label={c.label}
+                  onClick={() => dispatch({ type: 'SET_QR', patch: { color: c.value } })}
+                  style={{ background: c.value }}
+                />
+              ))}
               <button
-                key={c.id}
-                className={`swatch qr-dot ${state.qr.color === c.value ? 'is-active' : ''}`}
-                title={c.label}
-                aria-label={c.label}
-                onClick={() => dispatch({ type: 'SET_QR', patch: { color: c.value } })}
-                style={{ background: c.value }}
-              />
-            ))}
-            <button
-              className={`swatch qr-dot qr-dot-custom ${isCustomColor ? 'is-active' : ''}`}
-              title="Custom color"
-              aria-label="Custom color"
-              onClick={() => customColorRef.current?.click()}
-              style={isCustomColor ? { background: state.qr.color } : undefined}
-            >
-              {!isCustomColor && <span className="plus" aria-hidden>+</span>}
-              <input
-                ref={customColorRef}
-                type="color"
-                className="qr-color-input"
-                value={state.qr.color}
-                onChange={(e) => dispatch({ type: 'SET_QR', patch: { color: e.target.value } })}
-              />
-            </button>
-          </div>
-
-          <div className="qr-style-row" role="tablist" aria-label="QR style">
-            {QR_STYLES.map((s) => (
-              <button
-                key={s.id}
-                role="tab"
-                aria-selected={state.qrStyle === s.id}
-                className={`qr-style-btn ${state.qrStyle === s.id ? 'is-active' : ''}`}
-                onClick={() => dispatch({ type: 'SET_QR_STYLE', value: s.id })}
+                className={`swatch qr-dot qr-dot-custom ${isCustomColor ? 'is-active' : ''}`}
+                title="Custom color"
+                aria-label="Custom color"
+                onClick={() => customColorRef.current?.click()}
+                style={isCustomColor ? { background: state.qr.color } : undefined}
               >
-                {s.label}
+                {!isCustomColor && <span className="plus" aria-hidden>+</span>}
+                <input
+                  ref={customColorRef}
+                  type="color"
+                  className="qr-color-input"
+                  value={state.qr.color}
+                  onChange={(e) => dispatch({ type: 'SET_QR', patch: { color: e.target.value } })}
+                />
               </button>
-            ))}
+            </div>
           </div>
 
-          <Slider
-            label="Opacity"
-            value={state.qr.opacity}
-            min={0.1}
-            max={1}
-            step={0.01}
-            format={(v) => `${Math.round(v * 100)}%`}
-            onChange={(v) => dispatch({ type: 'SET_QR', patch: { opacity: v } })}
-          />
+          <div className="qr-field">
+            <span className="qr-field-label">Style</span>
+            <div className="qr-style-row" role="tablist" aria-label="QR style">
+              {QR_STYLES.map((s) => (
+                <button
+                  key={s.id}
+                  role="tab"
+                  aria-selected={state.qrStyle === s.id}
+                  className={`qr-style-btn ${state.qrStyle === s.id ? 'is-active' : ''}`}
+                  onClick={() => dispatch({ type: 'SET_QR_STYLE', value: s.id })}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          <div className="switch-row">
-            <span>Blend</span>
-            <button
-              role="switch"
-              aria-checked={state.qr.blendMode === 'overlay'}
-              aria-label="Blend QR with background"
-              className={`switch ${state.qr.blendMode === 'overlay' ? 'on' : ''}`}
-              onClick={() =>
-                dispatch({
-                  type: 'SET_QR',
-                  patch: { blendMode: state.qr.blendMode === 'overlay' ? 'normal' : 'overlay' },
-                })
-              }
-            >
-              <span className="knob" />
-            </button>
+          <div className="qr-adjust">
+            <Slider
+              label="Opacity"
+              value={state.qr.opacity}
+              min={0.1}
+              max={1}
+              step={0.01}
+              format={(v) => `${Math.round(v * 100)}%`}
+              onChange={(v) => dispatch({ type: 'SET_QR', patch: { opacity: v } })}
+            />
+
+            <div className="switch-row">
+              <span>Blend</span>
+              <button
+                role="switch"
+                aria-checked={state.qr.blendMode === 'overlay'}
+                aria-label="Blend QR with background"
+                className={`switch ${state.qr.blendMode === 'overlay' ? 'on' : ''}`}
+                onClick={() =>
+                  dispatch({
+                    type: 'SET_QR',
+                    patch: { blendMode: state.qr.blendMode === 'overlay' ? 'normal' : 'overlay' },
+                  })
+                }
+              >
+                <span className="knob" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

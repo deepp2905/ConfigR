@@ -9,9 +9,9 @@
   --text: #f4f4f6;
   --text-2: #9a9aa4;
   --text-3: #65656e;
-  --accent-a: #7c5cff;
-  --accent-b: #ff5ca8;
-  --accent: linear-gradient(135deg, #7c5cff, #ff5ca8);
+  --accent-a: #f4f4f6;
+  --accent-b: #f4f4f6;
+  --accent: #f4f4f6;
   --danger: #ff6b6b;
   --radius: 14px;
   --radius-sm: 10px;
@@ -200,8 +200,8 @@ html.qr-cur-nesw * {
 /* Temporary center-snap guides */
 .qr-guide {
   position: absolute;
-  background: var(--accent-b);
-  box-shadow: 0 0 6px rgba(255, 92, 168, 0.7);
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
   pointer-events: none;
   z-index: 2;
 }
@@ -567,6 +567,31 @@ html.qr-cur-nesw * {
 
 /* ③ QR + general inputs */
 .field-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* QR section: labeled selector groups, then a quieter cluster of fine adjustments.
+   Larger gaps separate groups; tight gaps bind a label to its control. */
+.qr-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.qr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.qr-field-label {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.qr-adjust {
   display: flex;
   flex-direction: column;
   gap: 16px;
