@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Chevron } from './Chevron'
 
 export interface SelectOption {
   value: string
@@ -51,7 +52,7 @@ export function Select({ value, options, onChange, ariaLabel, variant = 'inline'
       >
         <span className="ui-select-value">{current?.label ?? ''}</span>
         <span className="ui-select-caret" aria-hidden>
-          ▾
+          <Chevron />
         </span>
       </button>
       {open && (

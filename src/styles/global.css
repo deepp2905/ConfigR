@@ -42,7 +42,7 @@ button {
 .app {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 22px 18px 110px;
+  padding: 22px 18px 48px;
 }
 
 .app-header {
@@ -146,26 +146,14 @@ html.qr-cur-nesw * {
   user-select: none;
 }
 
-/* Treatment: carved — dark plate with module-shaped holes revealing the shader. */
-.qr-carve {
-  position: absolute;
-  inset: 0;
-  background: rgba(8, 8, 11, 0.62);
-  pointer-events: none;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-}
-
 /* Treatment: dynamic — carve from the shader. Gaps show a darkened+blurred shader;
    module holes reveal the same shader crisp/bright behind. */
 .qr-dynamic {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(6px) brightness(0.42);
-  backdrop-filter: blur(6px) brightness(0.42);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
@@ -289,13 +277,17 @@ html.qr-cur-nesw * {
 }
 
 .ui-select-caret {
+  display: inline-flex;
   color: var(--text-3);
-  font-size: 10px;
   transition: transform 0.15s ease;
 }
 
 .ui-select.is-open .ui-select-caret {
   transform: rotate(180deg);
+}
+
+.chevron-svg {
+  display: block;
 }
 
 /* Inline (boxed) variant — used in the QR section */
@@ -718,7 +710,7 @@ input[type='range']::-moz-range-thumb {
   padding: 18px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
   font-size: 12.5px;
   font-weight: 500;
   color: var(--text-3);
@@ -734,12 +726,12 @@ input[type='range']::-moz-range-thumb {
 }
 
 .finetune > summary .chevron {
+  display: inline-flex;
   transition: transform 0.2s ease;
-  font-size: 10px;
 }
 
 .finetune[open] > summary .chevron {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 
 .finetune-body {
@@ -786,39 +778,62 @@ input[type='range']::-moz-range-thumb {
   font-size: 13px;
 }
 
-/* ---------- Floating QR-style switcher ---------- */
-.qr-style-menu {
-  position: fixed;
-  left: 50%;
-  bottom: 22px;
-  transform: translateX(-50%);
-  z-index: 50;
-  display: flex;
-  gap: 4px;
-  padding: 5px;
-  background: #fff;
-  border-radius: 999px;
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.55);
+/* ---------- QR-style selector (3 rectangle buttons) ---------- */
+.qr-style-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
 }
 
-.qr-style-tab {
-  border: none;
-  background: transparent;
-  color: #0a0a0b;
+.qr-style-btn {
+  border: 1px solid var(--hairline);
+  background: var(--input);
+  color: var(--text-2);
   font-size: 13px;
   font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 999px;
-  transition: background 0.15s ease, color 0.15s ease;
+  padding: 9px 8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.qr-style-tab:not(.is-active):hover {
-  background: rgba(0, 0, 0, 0.06);
+.qr-style-btn:not(.is-active):hover {
+  color: var(--text);
+  border-color: var(--hairline-strong);
 }
 
-.qr-style-tab.is-active {
-  background: #0a0a0b;
-  color: #fff;
+.qr-style-btn.is-active {
+  background: #fff;
+  color: var(--ground);
+  border-color: #fff;
+}
+
+/* Custom-color dot (+) */
+.qr-dot-custom {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--input);
+  border: 1px solid var(--hairline-strong);
+  overflow: hidden;
+}
+
+.qr-dot-custom .plus {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-2);
+}
+
+.qr-color-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 /* ---------- Modal ---------- */

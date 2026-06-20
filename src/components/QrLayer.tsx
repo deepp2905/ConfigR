@@ -10,14 +10,20 @@ const SNAP = 0.018
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
+/** Hex (#rgb/#rrggbb) → rgba() string at the given alpha. */
+function rgba(hex: string, a: number): string {
+  let h = hex.replace('#', '')
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('')
+  const n = parseInt(h, 16)
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`
+}
+
 type Corner = 'tl' | 'tr' | 'bl' | 'br'
 
 interface QrLayerProps {
   url: string
   qr: QrConfig
   qrStyle: QrStyle
-  /** Active shader palette colors (for duotone ink). */
-  paletteColors: string[]
   selected: boolean
   aspect: number
   frameRef: React.RefObject<HTMLDivElement | null>
@@ -25,17 +31,10 @@ interface QrLayerProps {
   onChange: (patch: Partial<QrConfig>) => void
 }
 
-/** Module ink color for an image-based treatment (duotone / dots). */
-function inkFor(style: QrStyle, qr: QrConfig, paletteColors: string[]): string {
-  if (style === 'duotone') return paletteColors[0] ?? qr.color
-  return qr.color // dots
-}
-
 export function QrLayer({
   url,
   qr,
   qrStyle,
-  paletteColors,
   selected,
   aspect,
   frameRef,
@@ -47,14 +46,12 @@ export function QrLayer({
   const [guides, setGuides] = useState<{ v: boolean; h: boolean }>({ v: false, h: false })
   const revokeRef = useRef<string | null>(null)
 
-  const ink = inkFor(qrStyle, qr, paletteColors)
-
   // Generate the QR resource for the current treatment.
   useEffect(() => {
     let cancelled = false
     const handle = setTimeout(async () => {
       try {
-        if (qrStyle === 'carved' || qrStyle === 'dynamic') {
+        if (qrStyle === 'dynamic') {
           const mask = await renderQrMaskUrl({ data: url, size: PREVIEW_QR_PX, rounded: qr.rounded })
           if (cancelled) return
           setMaskUrl(mask)
@@ -64,7 +61,7 @@ export function QrLayer({
             data: url,
             size: PREVIEW_QR_PX,
             rounded: qr.rounded,
-            color: ink,
+            color: qr.color,
             dotType: qrStyle === 'dots' ? 'dots' : qr.rounded ? 'rounded' : 'square',
           })
           if (cancelled) return
@@ -81,7 +78,7 @@ export function QrLayer({
       cancelled = true
       clearTimeout(handle)
     }
-  }, [url, qrStyle, qr.rounded, ink])
+  }, [url, qrStyle, qr.rounded, qr.color])
 
   useEffect(() => () => void (revokeRef.current && URL.revokeObjectURL(revokeRef.current)), [])
 
@@ -152,24 +149,14 @@ export function QrLayer({
         role="button"
         aria-label="Drag to move the QR code"
       >
-        {qrStyle === 'carved' && maskUrl && (
-          <div
-            className="qr-carve"
-            style={{
-              opacity: qr.opacity,
-              borderRadius: radius,
-              WebkitMaskImage: `url(${maskUrl})`,
-              maskImage: `url(${maskUrl})`,
-            }}
-          />
-        )}
-
         {qrStyle === 'dynamic' && maskUrl && (
           <div
             className="qr-dynamic"
             style={{
               opacity: qr.opacity,
               borderRadius: radius,
+              background: rgba(qr.color, 0.5),
+              mixBlendMode: blend,
               WebkitMaskImage: `url(${maskUrl})`,
               maskImage: `url(${maskUrl})`,
             }}

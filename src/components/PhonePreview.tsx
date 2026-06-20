@@ -65,20 +65,13 @@ export function PhonePreview() {
           {...shaderProps}
           speed={0}
           frame={state.seed}
-          style={{
-            position: 'absolute',
-            // Negative inset enlarges the shader so blurred edges fall outside the (clipped)
-            // frame instead of fading to transparent.
-            inset: `${-state.blur}px`,
-            filter: state.blur ? `blur(${state.blur}px)` : undefined,
-          }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
         />
         {normalizedUrl && (
           <QrLayer
             url={normalizedUrl}
             qr={state.qr}
             qrStyle={state.qrStyle}
-            paletteColors={palette.colors}
             selected={qrSelected}
             aspect={device.width / device.height}
             frameRef={frameRef}

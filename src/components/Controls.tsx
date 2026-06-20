@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK } from '../state/store'
+import { useRef, useState } from 'react'
+import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK, QR_STYLES } from '../state/store'
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
 import { NoQrModal } from './NoQrModal'
+import { Chevron } from './Chevron'
 import { isValidUrl } from '../lib/url'
 
 const QR_COLORS: { id: string; label: string; value: string }[] = [
@@ -54,6 +55,8 @@ export function Controls() {
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showNoQr, setShowNoQr] = useState(false)
+  const customColorRef = useRef<HTMLInputElement | null>(null)
+  const isCustomColor = state.qr.color !== QR_WHITE && state.qr.color !== QR_BLACK
 
   async function runExport() {
     setError(null)
@@ -137,10 +140,10 @@ export function Controls() {
       {/* Fine-tune — power-user tweaking, de-emphasized */}
       <details className="finetune">
         <summary>
+          <span>Fine-tune</span>
           <span className="chevron" aria-hidden>
-            ▶
+            <Chevron />
           </span>
-          Fine-tune
         </summary>
         <div className="finetune-body">
           {def.params.map((p) => (
@@ -154,15 +157,6 @@ export function Controls() {
               onChange={(v) => dispatch({ type: 'SET_PARAM', key: p.key, value: v })}
             />
           ))}
-          <Slider
-            label="Blur"
-            value={state.blur}
-            min={0}
-            max={24}
-            step={1}
-            format={(v) => `${Math.round(v)}px`}
-            onChange={(v) => dispatch({ type: 'SET_BLUR', value: v })}
-          />
           <Slider
             label="Seed"
             value={state.seed}
@@ -192,6 +186,36 @@ export function Controls() {
                 style={{ background: c.value }}
               />
             ))}
+            <button
+              className={`swatch qr-dot qr-dot-custom ${isCustomColor ? 'is-active' : ''}`}
+              title="Custom color"
+              aria-label="Custom color"
+              onClick={() => customColorRef.current?.click()}
+              style={isCustomColor ? { background: state.qr.color } : undefined}
+            >
+              {!isCustomColor && <span className="plus" aria-hidden>+</span>}
+              <input
+                ref={customColorRef}
+                type="color"
+                className="qr-color-input"
+                value={state.qr.color}
+                onChange={(e) => dispatch({ type: 'SET_QR', patch: { color: e.target.value } })}
+              />
+            </button>
+          </div>
+
+          <div className="qr-style-row" role="tablist" aria-label="QR style">
+            {QR_STYLES.map((s) => (
+              <button
+                key={s.id}
+                role="tab"
+                aria-selected={state.qrStyle === s.id}
+                className={`qr-style-btn ${state.qrStyle === s.id ? 'is-active' : ''}`}
+                onClick={() => dispatch({ type: 'SET_QR_STYLE', value: s.id })}
+              >
+                {s.label}
+              </button>
+            ))}
           </div>
 
           <Slider
@@ -199,7 +223,7 @@ export function Controls() {
             value={state.qr.opacity}
             min={0.1}
             max={1}
-            step={0.05}
+            step={0.01}
             format={(v) => `${Math.round(v * 100)}%`}
             onChange={(v) => dispatch({ type: 'SET_QR', patch: { opacity: v } })}
           />
@@ -221,19 +245,6 @@ export function Controls() {
               <span className="knob" />
             </button>
           </div>
-
-          <div className="switch-row">
-            <span>Rounded corners</span>
-            <button
-              role="switch"
-              aria-checked={state.qr.rounded}
-              aria-label="Rounded corners"
-              className={`switch ${state.qr.rounded ? 'on' : ''}`}
-              onClick={() => dispatch({ type: 'SET_QR', patch: { rounded: !state.qr.rounded } })}
-            >
-              <span className="knob" />
-            </button>
-          </div>
         </div>
       </div>
 
@@ -241,7 +252,7 @@ export function Controls() {
 
       <div className="export-bar">
         <button className="btn-export" onClick={handleExport} disabled={exporting}>
-          {exporting ? 'Rendering…' : 'Export PNG'}
+          {exporting ? 'Rendering…' : 'Download'}
         </button>
       </div>
 

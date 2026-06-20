@@ -6,6 +6,13 @@ import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { normalizeUrl } from '../lib/url'
 import { renderQrImage } from '../lib/qr'
 
+function rgba(hex: string, a: number): string {
+  let h = hex.replace('#', '')
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('')
+  const n = parseInt(h, 16)
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`
+}
+
 function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, r: number) {
   const rr = Math.min(r, s / 2)
   ctx.beginPath()
@@ -84,19 +91,7 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
     const ctx = out.getContext('2d')
     if (!ctx) throw new Error('2D context unavailable')
 
-    // Blur the shader layer only, scaled from preview px to native px. Overfill the draw so
-    // blurred edges cover the full canvas instead of fading to transparent.
-    const frameW = (document.querySelector('.phone-frame') as HTMLElement | null)?.clientWidth
-    const blurPx = frameW ? state.blur * (w / frameW) : state.blur
-    if (blurPx > 0.5) {
-      const pad = Math.ceil(blurPx * 3)
-      ctx.save()
-      ctx.filter = `blur(${blurPx}px)`
-      ctx.drawImage(shaderCanvas, -pad, -pad, w + pad * 2, h + pad * 2)
-      ctx.restore()
-    } else {
-      ctx.drawImage(shaderCanvas, 0, 0, w, h)
-    }
+    ctx.drawImage(shaderCanvas, 0, 0, w, h)
 
     const data = normalizeUrl(state.url)
     if (data) {
@@ -104,54 +99,49 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
       const qrSize = Math.round(state.qr.scale * w)
       const qx = Math.round(state.qr.posX * w - qrSize / 2)
       const qy = Math.round(state.qr.posY * h - qrSize / 2)
-      const rad = state.qr.rounded ? qrSize * 0.07 : 0
-      const palette = getPalette(state.paletteId)
-      const ink = style === 'duotone' ? palette.colors[0] : state.qr.color
+      const rad = qrSize * 0.07
 
       const qrImg = await renderQrImage({
         data,
         size: qrSize,
-        rounded: state.qr.rounded,
-        color: ink,
-        dotType: style === 'dots' ? 'dots' : state.qr.rounded ? 'rounded' : 'square',
+        rounded: true,
+        color: state.qr.color,
+        dotType: style === 'dots' ? 'dots' : 'rounded',
       })
+
+      // Build the treatment into a transparent temp canvas so opacity + blend can be applied
+      // uniformly to the whole result.
+      const qc = document.createElement('canvas')
+      qc.width = qrSize
+      qc.height = qrSize
+      const qctx = qc.getContext('2d')!
+      if (style === 'dynamic') {
+        // Gaps: blurred shader region tinted with the chosen color; modules: crisp shader.
+        qctx.save()
+        roundRectPath(qctx, 0, 0, qrSize, rad)
+        qctx.clip()
+        qctx.filter = 'blur(10px)'
+        qctx.drawImage(shaderCanvas, 0, 0, shaderCanvas.width, shaderCanvas.height, -qx, -qy, w, h)
+        qctx.filter = 'none'
+        qctx.fillStyle = rgba(state.qr.color, 0.5)
+        qctx.fillRect(0, 0, qrSize, qrSize)
+        qctx.restore()
+        const mod = document.createElement('canvas')
+        mod.width = qrSize
+        mod.height = qrSize
+        const mctx = mod.getContext('2d')!
+        mctx.drawImage(shaderCanvas, 0, 0, shaderCanvas.width, shaderCanvas.height, -qx, -qy, w, h)
+        mctx.globalCompositeOperation = 'destination-in'
+        mctx.drawImage(qrImg, 0, 0, qrSize, qrSize)
+        qctx.drawImage(mod, 0, 0)
+      } else {
+        qctx.drawImage(qrImg, 0, 0, qrSize, qrSize)
+      }
 
       ctx.save()
       ctx.globalAlpha = state.qr.opacity
-      if (style === 'carved') {
-        // Dark plate with module-shaped holes that reveal the shader.
-        ctx.save()
-        roundRectPath(ctx, qx, qy, qrSize, rad)
-        ctx.clip()
-        ctx.fillStyle = 'rgba(8,8,11,0.62)'
-        ctx.fillRect(qx, qy, qrSize, qrSize)
-        ctx.globalCompositeOperation = 'destination-out'
-        ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
-        ctx.restore()
-      } else if (style === 'dynamic') {
-        // Carve the QR from the shader: gaps show a darkened+blurred shader, modules show
-        // the same shader crisp/full — the QR becomes part of the gradient.
-        ctx.save()
-        roundRectPath(ctx, qx, qy, qrSize, rad)
-        ctx.clip()
-        ctx.filter = 'blur(10px) brightness(0.42)'
-        ctx.drawImage(shaderCanvas, 0, 0, w, h)
-        ctx.filter = 'none'
-        // Crisp shader, kept only where the modules are, drawn on top.
-        const tmp = document.createElement('canvas')
-        tmp.width = qrSize
-        tmp.height = qrSize
-        const tctx = tmp.getContext('2d')!
-        tctx.drawImage(shaderCanvas, 0, 0, shaderCanvas.width, shaderCanvas.height, -qx, -qy, w, h)
-        tctx.globalCompositeOperation = 'destination-in'
-        tctx.drawImage(qrImg, 0, 0, qrSize, qrSize)
-        ctx.drawImage(tmp, qx, qy)
-        ctx.restore()
-      } else {
-        // duotone / dots modules, with optional overlay blend.
-        if (state.qr.blendMode === 'overlay') ctx.globalCompositeOperation = 'overlay'
-        ctx.drawImage(qrImg, qx, qy, qrSize, qrSize)
-      }
+      if (state.qr.blendMode === 'overlay') ctx.globalCompositeOperation = 'overlay'
+      ctx.drawImage(qc, qx, qy)
       ctx.restore()
     }
 
