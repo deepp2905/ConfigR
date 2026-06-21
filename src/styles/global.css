@@ -16,10 +16,9 @@
   --danger: #ff6b6b;
   --radius: 14px;
   --radius-sm: 10px;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
   font-optical-sizing: auto;
-  /* Slight negative tracking reads more modern at UI sizes with Inter. */
+  /* Slight negative tracking reads more modern at UI sizes. */
   letter-spacing: -0.011em;
   color-scheme: dark;
 }
