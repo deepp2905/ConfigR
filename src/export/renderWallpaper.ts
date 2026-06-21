@@ -173,6 +173,7 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
       lcx.fillStyle = state.qr.color
       lcx.fillRect(0, 0, logoW, logoH)
       ctx.save()
+      ctx.globalAlpha = state.qr.opacity
       ctx.globalCompositeOperation =
         state.qr.blendMode === 'overlay' ? 'overlay' : 'source-over'
       ctx.drawImage(lc, lx, ly)

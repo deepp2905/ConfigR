@@ -84,6 +84,7 @@ export function PhonePreview() {
           aria-hidden
           style={{
             background: state.qr.color,
+            opacity: state.qr.opacity,
             mixBlendMode: state.qr.blendMode === 'overlay' ? 'overlay' : undefined,
           }}
         />
