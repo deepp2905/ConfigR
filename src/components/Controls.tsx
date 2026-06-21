@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK, QR_STYLES } from '../state/store'
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
 import { NoQrModal } from './NoQrModal'
 import { Chevron } from './Chevron'
+import { CustomColor } from './CustomColor'
 import { isValidUrl } from '../lib/url'
 
 const QR_COLORS: { id: string; label: string; value: string }[] = [
@@ -55,7 +56,6 @@ export function Controls() {
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showNoQr, setShowNoQr] = useState(false)
-  const customColorRef = useRef<HTMLInputElement | null>(null)
   const isCustomColor = state.qr.color !== QR_WHITE && state.qr.color !== QR_BLACK
 
   async function runExport() {
@@ -188,22 +188,11 @@ export function Controls() {
                   style={{ background: c.value }}
                 />
               ))}
-              <button
-                className={`swatch qr-dot qr-dot-custom ${isCustomColor ? 'is-active' : ''}`}
-                data-label="Custom color"
-                aria-label="Custom color"
-                onClick={() => customColorRef.current?.click()}
-                style={isCustomColor ? { background: state.qr.color } : undefined}
-              >
-                {!isCustomColor && <span className="plus" aria-hidden>+</span>}
-                <input
-                  ref={customColorRef}
-                  type="color"
-                  className="qr-color-input"
-                  value={state.qr.color}
-                  onChange={(e) => dispatch({ type: 'SET_QR', patch: { color: e.target.value } })}
-                />
-              </button>
+              <CustomColor
+                value={state.qr.color}
+                isActive={isCustomColor}
+                onChange={(hex) => dispatch({ type: 'SET_QR', patch: { color: hex } })}
+              />
             </div>
           </div>
 
