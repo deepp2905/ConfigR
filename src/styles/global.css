@@ -17,7 +17,10 @@
   --radius: 14px;
   --radius-sm: 10px;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-feature-settings: 'cv11', 'ss01';
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  font-optical-sizing: auto;
+  /* Slight negative tracking reads more modern at UI sizes with Inter. */
+  letter-spacing: -0.011em;
   color-scheme: dark;
 }
 
@@ -30,7 +33,11 @@ body {
   margin: 0;
   background: var(--ground);
   color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   min-height: 100dvh;
 }
 
@@ -475,9 +482,9 @@ html.qr-cur-nesw * {
 }
 
 .section-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-3);
 }
@@ -490,9 +497,9 @@ html.qr-cur-nesw * {
 
 .hero-label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-2);
   margin-bottom: 10px;
