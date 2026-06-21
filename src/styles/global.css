@@ -466,6 +466,10 @@ html.qr-cur-nesw * {
 .controls {
   display: flex;
   flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 22px;
 }
 
 .section {
