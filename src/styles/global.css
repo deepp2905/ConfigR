@@ -348,6 +348,12 @@ html.qr-cur-nesw * {
   position: relative;
 }
 
+.ui-select-value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .ui-select-trigger {
   display: flex;
   align-items: center;
