@@ -43,6 +43,14 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
+        onPointerDown={() => {
+          document.documentElement.classList.add('qr-cur-grabbing')
+          const up = () => {
+            document.documentElement.classList.remove('qr-cur-grabbing')
+            window.removeEventListener('pointerup', up)
+          }
+          window.addEventListener('pointerup', up)
+        }}
       />
     </label>
   )
