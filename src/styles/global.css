@@ -407,11 +407,14 @@ html.qr-cur-nesw * {
   min-width: 100%;
 }
 
+/* Menu matches the trigger's width (fixed to the button), labels wrap as needed. */
 .ui-select.pill .ui-select-menu {
-  left: 50%;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: min(80vw, 320px);
+  left: 0;
+  right: 0;
+}
+
+.ui-select.pill .ui-select-option {
+  white-space: normal;
 }
 
 .ui-select-option {
@@ -423,14 +426,15 @@ html.qr-cur-nesw * {
   white-space: nowrap;
 }
 
+/* Hover is a lighter/fainter wash; the active (selected) preset is the stronger fill. */
 .ui-select-option:hover {
-  background: var(--input-hover);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
 }
 
 .ui-select-option.is-active {
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 /* ---------- Control column (right) ---------- */
