@@ -5,26 +5,33 @@ const HEX_RE = /^[0-9a-fA-F]{6}$/
 const withHash = (v: string) => (v.startsWith('#') ? v : `#${v}`)
 
 interface CustomColorProps {
+  /** Seed value shown when the popover opens. */
   value: string
-  isActive: boolean
+  /** Live preview as the user types/picks. */
   onChange: (hex: string) => void
+  /** Finalized color (popover closed with a valid hex) — persist it as a swatch. */
+  onCommit: (hex: string) => void
 }
 
-/** Custom QR color: a themed HEX-first popover with a native picker as a secondary swatch. */
-export function CustomColor({ value, isActive, onChange }: CustomColorProps) {
+/** "Add custom color" button + themed HEX-first popover. */
+export function CustomColor({ value, onChange, onCommit }: CustomColorProps) {
   const [open, setOpen] = useState(false)
   const [text, setText] = useState(value.replace('#', ''))
   const ref = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => setText(value.replace('#', '')), [value])
+  function close() {
+    setOpen(false)
+    if (HEX_RE.test(text)) onCommit(withHash(text))
+  }
 
   useEffect(() => {
     if (!open) return
+    setText(value.replace('#', ''))
     const onDown = (e: PointerEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false)
+      if (!ref.current?.contains(e.target as Node)) close()
     }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape' || e.key === 'Enter') close()
     }
     document.addEventListener('pointerdown', onDown)
     document.addEventListener('keydown', onKey)
@@ -32,7 +39,8 @@ export function CustomColor({ value, isActive, onChange }: CustomColorProps) {
       document.removeEventListener('pointerdown', onDown)
       document.removeEventListener('keydown', onKey)
     }
-  }, [open])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, text])
 
   function onHexInput(raw: string) {
     const clean = raw.replace(/[^0-9a-fA-F]/g, '').slice(0, 6)
@@ -46,15 +54,14 @@ export function CustomColor({ value, isActive, onChange }: CustomColorProps) {
     <div className="cc" ref={ref}>
       <button
         type="button"
-        className={`swatch qr-dot qr-dot-custom ${isActive ? 'is-active' : ''}`}
-        data-label="Custom color"
-        aria-label="Custom color"
+        className="swatch qr-dot qr-dot-custom"
+        data-label="Add color"
+        aria-label="Add custom color"
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        style={isActive ? { background: value } : undefined}
       >
-        {!isActive && <PlusIcon />}
+        <PlusIcon />
       </button>
 
       {open && (

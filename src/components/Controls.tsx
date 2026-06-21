@@ -56,6 +56,8 @@ export function Controls() {
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showNoQr, setShowNoQr] = useState(false)
+  // Custom QR colors picked this session persist as their own swatches.
+  const [customColors, setCustomColors] = useState<string[]>([])
   const isCustomColor = state.qr.color !== QR_WHITE && state.qr.color !== QR_BLACK
 
   async function runExport() {
@@ -188,10 +190,25 @@ export function Controls() {
                   style={{ background: c.value }}
                 />
               ))}
+              {customColors.map((c) => (
+                <button
+                  key={c}
+                  className={`swatch qr-dot ${state.qr.color === c ? 'is-active' : ''}`}
+                  data-label={c.toUpperCase()}
+                  aria-label={`Custom ${c}`}
+                  onClick={() => dispatch({ type: 'SET_QR', patch: { color: c } })}
+                  style={{ background: c }}
+                />
+              ))}
               <CustomColor
-                value={state.qr.color}
-                isActive={isCustomColor}
+                value={isCustomColor ? state.qr.color : '#7c5cff'}
                 onChange={(hex) => dispatch({ type: 'SET_QR', patch: { color: hex } })}
+                onCommit={(hex) => {
+                  dispatch({ type: 'SET_QR', patch: { color: hex } })
+                  setCustomColors((prev) =>
+                    prev.includes(hex) || hex === QR_WHITE || hex === QR_BLACK ? prev : [...prev, hex],
+                  )
+                }}
               />
             </div>
           </div>
