@@ -52,7 +52,7 @@ export function PhonePreview() {
           onChange={(deviceId) => dispatch({ type: 'SET_DEVICE', deviceId })}
           options={DEVICE_PRESETS.map((d) => ({
             value: d.id,
-            label: `${d.label} · ${d.width}×${d.height}`,
+            label: `${d.label}  ·  ${d.width} × ${d.height}`,
           }))}
         />
       </div>

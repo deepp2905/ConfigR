@@ -385,12 +385,17 @@ html.qr-cur-nesw * {
   font-size: 13px;
 }
 
-/* Pill variant — used for the device picker under the preview */
+/* Pill variant — used for the device picker under the preview (fixed 250px) */
+.ui-select.pill {
+  width: 250px;
+}
+
 .ui-select.pill .ui-select-trigger {
+  width: 250px;
   background: var(--panel);
   color: var(--text-2);
   border-radius: 999px;
-  padding: 7px 14px;
+  padding: 7px 16px;
   font-size: 12.5px;
 }
 
