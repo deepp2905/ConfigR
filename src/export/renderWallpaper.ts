@@ -129,9 +129,7 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
         qctx.save()
         roundRectPath(qctx, 0, 0, qrSize, rad)
         qctx.clip()
-        qctx.filter = 'blur(10px)'
         qctx.drawImage(shaderCanvas, 0, 0, shaderCanvas.width, shaderCanvas.height, -qx, -qy, w, h)
-        qctx.filter = 'none'
         qctx.fillStyle = rgba(state.qr.color, 0.5)
         qctx.fillRect(0, 0, qrSize, qrSize)
         qctx.restore()

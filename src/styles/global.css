@@ -247,8 +247,6 @@ html.qr-cur-nesw * {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;

@@ -46,8 +46,8 @@ export const QR_BLACK = '#0b0b10'
 export type QrStyle = 'dynamic' | 'duotone' | 'dots'
 
 export const QR_STYLES: { id: QrStyle; label: string }[] = [
-  { id: 'dynamic', label: 'Dynamic' },
-  { id: 'duotone', label: 'Duotone' },
+  { id: 'dynamic', label: 'Cutout' },
+  { id: 'duotone', label: 'Solid' },
   { id: 'dots', label: 'Dots' },
 ]
 
