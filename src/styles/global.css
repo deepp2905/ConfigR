@@ -522,6 +522,8 @@ html.qr-cur-nesw * {
 
 .hero-input::placeholder {
   color: var(--text-3);
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .hero-input:focus {
