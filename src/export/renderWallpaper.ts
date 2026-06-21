@@ -170,10 +170,11 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
       const lcx = lc.getContext('2d')!
       lcx.drawImage(logo, 0, 0, logoW, logoH)
       lcx.globalCompositeOperation = 'source-in'
-      lcx.fillStyle = '#ffffff'
+      lcx.fillStyle = state.qr.color
       lcx.fillRect(0, 0, logoW, logoH)
       ctx.save()
-      ctx.globalCompositeOperation = 'overlay'
+      ctx.globalCompositeOperation =
+        state.qr.blendMode === 'overlay' ? 'overlay' : 'source-over'
       ctx.drawImage(lc, lx, ly)
       ctx.restore()
     } catch {

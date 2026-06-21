@@ -79,7 +79,14 @@ export function PhonePreview() {
             onChange={(patch) => dispatch({ type: 'SET_QR', patch })}
           />
         )}
-        <div className="config-mark" aria-hidden />
+        <div
+          className="config-mark"
+          aria-hidden
+          style={{
+            background: state.qr.color,
+            mixBlendMode: state.qr.blendMode === 'overlay' ? 'overlay' : undefined,
+          }}
+        />
       </div>
 
       <button
