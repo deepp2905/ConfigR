@@ -45,18 +45,14 @@ const PALETTES = {
   sunset: { id: 'sunset', label: 'Sunset', colors: ['#ff7849', '#ff2e63', '#7b2ff7', '#08001f'], colorBack: '#08001f' },
   aurora: { id: 'aurora', label: 'Aurora', colors: ['#00ffa3', '#03e1ff', '#6f00ff', '#03001a'], colorBack: '#03001a' },
   ember: { id: 'ember', label: 'Ember', colors: ['#ffb703', '#fb8500', '#e63946', '#1a0a00'], colorBack: '#1a0a00' },
-  ocean: { id: 'ocean', label: 'Ocean', colors: ['#48cae4', '#0096c7', '#023e8a', '#03045e'], colorBack: '#03045e' },
   mono: { id: 'mono', label: 'Graphite', colors: ['#e9e9ee', '#9aa0b5', '#3a3d52', '#0a0a0b'], colorBack: '#0a0a0b' },
-  candy: { id: 'candy', label: 'Candy', colors: ['#ff5c8a', '#ff8fab', '#ffc2d1', '#22d3ee'] },
   // Pop palettes from orange/yellow/green/blue + grey/black, built on color-theory harmonies.
-  // Harmonious analogous pairs span all four hues across the set (mixing complementaries in a
-  // gradient just muds to brown), plus monochrome and neutral-pop options.
+  // Harmonious analogous pairs span hues across the set (mixing complementaries in a
+  // gradient just muds to brown), plus neutral-pop options.
   // Citrus: analogous (yellow → yellow-green → green).
   citrus: { id: 'citrus', label: 'Citrus', colors: ['#f5f24a', '#7ce04a', '#2bd476'], colorBack: '#04261a' },
   // Sunburst: warm analogous (orange → amber → yellow).
   sunburst: { id: 'sunburst', label: 'Sunburst', colors: ['#ff6b3d', '#ffae3d', '#f5f24a'], colorBack: '#1c0e00' },
-  // Volt: monochromatic yellow on black.
-  volt: { id: 'volt', label: 'Volt', colors: ['#fff36a', '#f5f24a', '#0a0a00'], colorBack: '#000000' },
   // Electric: monochromatic blue on black.
   electric: { id: 'electric', label: 'Electric', colors: ['#7cc9ff', '#19a9ff', '#000814'], colorBack: '#000814' },
 } satisfies Record<string, Palette>
@@ -66,13 +62,10 @@ export const ALL_PALETTES: Palette[] = [
   PALETTES.configPop,
   PALETTES.sunburst,
   PALETTES.citrus,
-  PALETTES.volt,
   PALETTES.electric,
-  PALETTES.candy,
   PALETTES.sunset,
   PALETTES.ember,
   PALETTES.aurora,
-  PALETTES.ocean,
   PALETTES.mono,
 ]
 
