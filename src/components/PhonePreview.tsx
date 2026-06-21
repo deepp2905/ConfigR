@@ -5,12 +5,14 @@ import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { normalizeUrl } from '../lib/url'
 import { QrLayer } from './QrLayer'
 import { Select } from './Select'
+import { DiceIcon } from './DiceIcon'
 
 export function PhonePreview() {
   const state = useConfig()
   const dispatch = useDispatchConfig()
   const frameRef = useRef<HTMLDivElement | null>(null)
   const [qrSelected, setQrSelected] = useState(false)
+  const [dieFace, setDieFace] = useState(5)
 
   const device = getDevice(state.deviceId)
   const def = getShader(state.shaderId)
@@ -92,9 +94,12 @@ export function PhonePreview() {
 
       <button
         className="btn-randomize"
-        onClick={() => dispatch({ type: 'RANDOMIZE_BACKGROUND' })}
+        onClick={() => {
+          setDieFace(1 + Math.floor(Math.random() * 6))
+          dispatch({ type: 'RANDOMIZE_BACKGROUND' })
+        }}
       >
-        <span aria-hidden>⟳</span> Randomize
+        <DiceIcon value={dieFace} /> Randomize
       </button>
     </div>
   )
