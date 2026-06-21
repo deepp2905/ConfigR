@@ -57,6 +57,7 @@ option,
 .preview-meta,
 .style-name,
 .slider-head,
+.switch-row,
 .qr-style-btn,
 .qr-guide,
 .config-mark,
@@ -72,6 +73,16 @@ textarea,
 .hero-input {
   -webkit-user-select: text;
   user-select: text;
+}
+
+/* Text selection matches the theme (white highlight, dark text). */
+::selection {
+  background: var(--text);
+  color: var(--ground);
+}
+::-moz-selection {
+  background: var(--text);
+  color: var(--ground);
 }
 
 /* Visible keyboard focus for all interactive controls (WCAG 2.4.7). */
@@ -606,6 +617,12 @@ html.qr-cur-nesw * {
 .swatch[data-label]:hover::after,
 .swatch[data-label]:focus-visible::after {
   opacity: 1;
+}
+
+/* Once the cursor is within the swatch group, switching between swatches is instant —
+   only the first show and the final exit animate. */
+.swatches:hover .swatch[data-label]::after {
+  transition-duration: 0s;
 }
 
 /* Black/white QR dots need a faint edge so the black dot is visible on dark panels. */
