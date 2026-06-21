@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { MeshGradient, Warp, GrainGradient, Swirl } from '@paper-design/shaders-react'
+import { MeshGradient, Warp, GrainGradient } from '@paper-design/shaders-react'
 
 /**
  * The shader registry is the single source of truth for the "variety pack" and,
@@ -48,11 +48,22 @@ const PALETTES = {
   ocean: { id: 'ocean', label: 'Ocean', colors: ['#48cae4', '#0096c7', '#023e8a', '#03045e'], colorBack: '#03045e' },
   mono: { id: 'mono', label: 'Graphite', colors: ['#e9e9ee', '#9aa0b5', '#3a3d52', '#0a0a0b'], colorBack: '#0a0a0b' },
   candy: { id: 'candy', label: 'Candy', colors: ['#ff5c8a', '#ff8fab', '#ffc2d1', '#22d3ee'] },
+  // Bold pop palettes inspired by orange/yellow/green/blue with grey + black.
+  spectrum: { id: 'spectrum', label: 'Spectrum', colors: ['#ff6b3d', '#f5f24a', '#2bd476', '#19a9ff'] },
+  tangerine: { id: 'tangerine', label: 'Tangerine', colors: ['#ff6b3d', '#ffb59e', '#d9d9d9', '#1a0a00'], colorBack: '#1a0a00' },
+  lemon: { id: 'lemon', label: 'Lemon', colors: ['#f5f24a', '#c7c33a', '#0a0a00'], colorBack: '#000000' },
+  mint: { id: 'mint', label: 'Mint', colors: ['#2bd476', '#d9d9d9', '#063a1f'], colorBack: '#042614' },
+  azure: { id: 'azure', label: 'Azure', colors: ['#19a9ff', '#0a5a99', '#02131f'], colorBack: '#000000' },
 } satisfies Record<string, Palette>
 
 /** Every palette is available for every shader. */
 export const ALL_PALETTES: Palette[] = [
   PALETTES.configPop,
+  PALETTES.spectrum,
+  PALETTES.tangerine,
+  PALETTES.lemon,
+  PALETTES.mint,
+  PALETTES.azure,
   PALETTES.candy,
   PALETTES.sunset,
   PALETTES.ember,
@@ -105,20 +116,6 @@ export const SHADERS: ShaderDef[] = [
       { key: 'intensity', label: 'Intensity', min: 0.3, max: 0.8, step: 0.01, default: 0.5 },
       { key: 'noise', label: 'Grain', min: 0.1, max: 0.7, step: 0.01, default: 0.35 },
       { key: 'scale', label: 'Scale', min: 0.7, max: 2, step: 0.01, default: 1 },
-    ],
-    acceptsColorBack: true,
-  },
-  {
-    id: 'swirl',
-    label: 'Spiral',
-    Component: Swirl as unknown as FC<Record<string, unknown>>,
-    base: {},
-    params: [
-      { key: 'bandCount', label: 'Bands', min: 3, max: 9, step: 1, default: 5 },
-      { key: 'twist', label: 'Twist', min: 0.4, max: 1, step: 0.01, default: 0.5 },
-      { key: 'softness', label: 'Softness', min: 0.2, max: 0.9, step: 0.01, default: 0.5 },
-      { key: 'noiseFrequency', label: 'Noise freq', min: 0.2, max: 0.8, step: 0.01, default: 0.5 },
-      { key: 'noise', label: 'Noise', min: 0, max: 0.5, step: 0.01, default: 0.2 },
     ],
     acceptsColorBack: true,
   },
