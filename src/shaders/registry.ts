@@ -55,14 +55,10 @@ const PALETTES = {
   citrus: { id: 'citrus', label: 'Citrus', colors: ['#f5f24a', '#7ce04a', '#2bd476'], colorBack: '#04261a' },
   // Sunburst: warm analogous (orange → amber → yellow).
   sunburst: { id: 'sunburst', label: 'Sunburst', colors: ['#ff6b3d', '#ffae3d', '#f5f24a'], colorBack: '#1c0e00' },
-  // Lagoon: cool analogous (green → teal → blue).
-  lagoon: { id: 'lagoon', label: 'Lagoon', colors: ['#2bd476', '#15c9c2', '#19a9ff'], colorBack: '#02131f' },
   // Volt: monochromatic yellow on black.
   volt: { id: 'volt', label: 'Volt', colors: ['#fff36a', '#f5f24a', '#0a0a00'], colorBack: '#000000' },
   // Electric: monochromatic blue on black.
   electric: { id: 'electric', label: 'Electric', colors: ['#7cc9ff', '#19a9ff', '#000814'], colorBack: '#000814' },
-  // Clay: neutral-pop (orange + grey anchored on warm dark).
-  clay: { id: 'clay', label: 'Clay', colors: ['#ff6b3d', '#e6e6e6', '#1a0a00'], colorBack: '#1a0a00' },
 } satisfies Record<string, Palette>
 
 /** Every palette is available for every shader. */
@@ -70,10 +66,8 @@ export const ALL_PALETTES: Palette[] = [
   PALETTES.configPop,
   PALETTES.sunburst,
   PALETTES.citrus,
-  PALETTES.lagoon,
   PALETTES.volt,
   PALETTES.electric,
-  PALETTES.clay,
   PALETTES.candy,
   PALETTES.sunset,
   PALETTES.ember,
