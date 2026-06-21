@@ -723,6 +723,11 @@ html.qr-cur-nesw * {
   gap: 16px;
 }
 
+/* Extra breathing room between the Opacity slider and the Blend toggle. */
+.qr-adjust .switch-row {
+  margin-top: 16px;
+}
+
 /* Sliders */
 .slider {
   display: flex;
