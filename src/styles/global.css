@@ -528,11 +528,10 @@ html.qr-cur-nesw * {
   border-radius: var(--radius-sm);
   border: 2px solid var(--hairline);
   overflow: hidden;
-  transition: border-color 0.15s ease, transform 0.1s ease;
+  transition: border-color 0.15s ease;
 }
 
 .style-tile:hover .style-thumb {
-  transform: translateY(-1px);
   border-color: var(--hairline-strong);
 }
 
@@ -560,6 +559,7 @@ html.qr-cur-nesw * {
 }
 
 .swatch {
+  position: relative;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -574,6 +574,34 @@ html.qr-cur-nesw * {
 
 .swatch.is-active {
   box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px #fff;
+}
+
+/* Themed tooltip showing the color label on hover/focus. */
+.swatch[data-label]::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 9px;
+  background: var(--menu);
+  color: var(--text);
+  border: 1px solid var(--hairline-strong);
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.6);
+  z-index: 40;
+}
+
+.swatch[data-label]:hover::after,
+.swatch[data-label]:focus-visible::after {
+  opacity: 1;
 }
 
 /* Black/white QR dots need a faint edge so the black dot is visible on dark panels. */
@@ -863,11 +891,7 @@ input[type='range']::-moz-range-thumb {
   color: var(--ground);
   background: #fff;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
-  transition: transform 0.06s ease, opacity 0.15s ease;
-}
-
-.btn-export:active {
-  transform: translateY(1px);
+  transition: opacity 0.15s ease;
 }
 
 .btn-export:disabled {

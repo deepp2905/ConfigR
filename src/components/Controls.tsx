@@ -128,7 +128,7 @@ export function Controls() {
             <button
               key={p.id}
               className={`swatch ${p.id === state.paletteId ? 'is-active' : ''}`}
-              title={p.label}
+              data-label={p.label}
               aria-label={p.label}
               onClick={() => dispatch({ type: 'SET_PALETTE', paletteId: p.id })}
               style={{ background: `linear-gradient(135deg, ${p.colors.slice(0, 3).join(', ')})` }}
@@ -182,7 +182,7 @@ export function Controls() {
                 <button
                   key={c.id}
                   className={`swatch qr-dot ${state.qr.color === c.value ? 'is-active' : ''}`}
-                  title={c.label}
+                  data-label={c.label}
                   aria-label={c.label}
                   onClick={() => dispatch({ type: 'SET_QR', patch: { color: c.value } })}
                   style={{ background: c.value }}
@@ -190,7 +190,7 @@ export function Controls() {
               ))}
               <button
                 className={`swatch qr-dot qr-dot-custom ${isCustomColor ? 'is-active' : ''}`}
-                title="Custom color"
+                data-label="Custom color"
                 aria-label="Custom color"
                 onClick={() => customColorRef.current?.click()}
                 style={isCustomColor ? { background: state.qr.color } : undefined}
