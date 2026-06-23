@@ -1147,18 +1147,22 @@ input[type='range']::-moz-range-thumb {
     gap: 48px;
   }
 
+  /* Control panel pinned to the left; preview fills and centers in the rest. */
+  .controls {
+    order: 0;
+    width: 400px;
+    flex-shrink: 0;
+  }
+
   .preview-stage {
+    order: 1;
     flex: 1;
     position: sticky;
     top: 24px;
+    align-items: center;
   }
 
   .phone-frame {
     height: clamp(520px, 80vh, 800px);
-  }
-
-  .controls {
-    width: 400px;
-    flex-shrink: 0;
   }
 }
