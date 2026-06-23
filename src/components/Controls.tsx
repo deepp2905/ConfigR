@@ -4,7 +4,6 @@ import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
 import { NoQrModal } from './NoQrModal'
-import { Chevron } from './Chevron'
 import { isValidUrl } from '../lib/url'
 
 const QR_COLORS: { id: string; label: string; value: string }[] = [
@@ -63,6 +62,11 @@ export function Controls() {
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showNoQr, setShowNoQr] = useState(false)
+  const [fineTune, setFineTune] = useState(false)
+
+  // The 3 most important fine-tune sliders: the top per-shader param, plus Scale and Seed.
+  const scaleParam = def.params.find((p) => p.key === 'scale')
+  const topParam = def.params.find((p) => p.key !== 'scale')
 
   async function runExport() {
     setError(null)
@@ -86,6 +90,7 @@ export function Controls() {
   }
 
   return (
+    <>
     <div className="controls">
       {/* ① Your link — the whole point */}
       <div className="hero">
@@ -143,37 +148,19 @@ export function Controls() {
         </div>
       </div>
 
-      {/* Fine-tune — power-user tweaking, de-emphasized */}
-      <details className="finetune">
-        <summary>
-          <span>Fine-tune</span>
-          <span className="chevron" aria-hidden>
-            <Chevron />
-          </span>
-        </summary>
-        <div className="finetune-body">
-          {def.params.map((p) => (
-            <Slider
-              key={p.key}
-              label={p.label}
-              value={state.params[p.key] ?? p.default}
-              min={p.min}
-              max={p.max}
-              step={p.step}
-              onChange={(v) => dispatch({ type: 'SET_PARAM', key: p.key, value: v })}
-            />
-          ))}
-          <Slider
-            label="Seed"
-            value={state.seed}
-            min={0}
-            max={9999}
-            step={1}
-            format={(v) => String(Math.round(v))}
-            onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
-          />
-        </div>
-      </details>
+      {/* Fine-tune — a toggle that reveals a floating pill of the 3 key sliders */}
+      <div className="finetune-toggle switch-row">
+        <span>Fine-tune</span>
+        <button
+          role="switch"
+          aria-checked={fineTune}
+          aria-label="Show fine-tune sliders"
+          className={`switch ${fineTune ? 'on' : ''}`}
+          onClick={() => setFineTune((v) => !v)}
+        >
+          <span className="knob" />
+        </button>
+      </div>
 
       {/* QR */}
       <div className="section">
@@ -264,5 +251,43 @@ export function Controls() {
         />
       )}
     </div>
+
+      {/* Floating fine-tune pill — the 3 key sliders, near the bottom of the viewport */}
+      {fineTune && (
+        <div className="finetune-pill" role="group" aria-label="Fine-tune">
+          {topParam && (
+            <Slider
+              key={topParam.key}
+              label={topParam.label}
+              value={state.params[topParam.key] ?? topParam.default}
+              min={topParam.min}
+              max={topParam.max}
+              step={topParam.step}
+              onChange={(v) => dispatch({ type: 'SET_PARAM', key: topParam.key, value: v })}
+            />
+          )}
+          {scaleParam && (
+            <Slider
+              key={scaleParam.key}
+              label={scaleParam.label}
+              value={state.params[scaleParam.key] ?? scaleParam.default}
+              min={scaleParam.min}
+              max={scaleParam.max}
+              step={scaleParam.step}
+              onChange={(v) => dispatch({ type: 'SET_PARAM', key: scaleParam.key, value: v })}
+            />
+          )}
+          <Slider
+            label="Seed"
+            value={state.seed}
+            min={0}
+            max={9999}
+            step={1}
+            format={(v) => String(Math.round(v))}
+            onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
+          />
+        </div>
+      )}
+    </>
   )
 }
