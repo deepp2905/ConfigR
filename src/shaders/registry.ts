@@ -77,10 +77,10 @@ export const SHADERS: ShaderDef[] = [
     id: 'mesh-gradient',
     label: 'Mesh',
     Component: MeshGradient as unknown as FC<Record<string, unknown>>,
-    base: {},
+    // Swirl is fixed (abstracted from the user and from Randomize); only distortion + scale tweak.
+    base: { swirl: 0.3 },
     params: [
       { key: 'distortion', label: 'Distortion', min: 0.3, max: 1, step: 0.01, default: 0.8 },
-      { key: 'swirl', label: 'Swirl', min: 0, max: 0.8, step: 0.01, default: 0.25 },
       { key: 'scale', label: 'Scale', min: 0.7, max: 2, step: 0.01, default: 1 },
     ],
   },
@@ -88,14 +88,13 @@ export const SHADERS: ShaderDef[] = [
     id: 'warp',
     label: 'Warp',
     Component: Warp as unknown as FC<Record<string, unknown>>,
-    base: { shape: 'checks' },
+    // Swirl, distortion and proportion are fixed (abstracted from the user and Randomize);
+    // only softness + scale tweak.
+    base: { shape: 'checks', swirl: 0.3, distortion: 0.1, proportion: 0.5 },
     // The default 'checks' warp reads as muddy blobs at thumbnail size; warped stripes
     // convey the flowing-distortion feel far better.
     tile: { shape: 'stripes', distortion: 0.45, swirl: 0.85, proportion: 0.4, scale: 0.85 },
     params: [
-      { key: 'distortion', label: 'Distortion', min: 0.1, max: 0.5, step: 0.01, default: 0.25 },
-      { key: 'swirl', label: 'Swirl', min: 0.2, max: 1, step: 0.01, default: 0.6 },
-      { key: 'proportion', label: 'Proportion', min: 0.2, max: 0.8, step: 0.01, default: 0.5 },
       { key: 'softness', label: 'Softness', min: 0.4, max: 1.5, step: 0.01, default: 1 },
       { key: 'scale', label: 'Scale', min: 0.6, max: 2, step: 0.01, default: 1 },
     ],
