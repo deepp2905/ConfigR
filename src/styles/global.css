@@ -180,8 +180,11 @@ summary:focus-visible,
   /* Confine QR mix-blend-mode to the frame so it blends with the shader, not the page. */
   isolation: isolate;
   background: #050507;
+  /* Border sits 2px off the frame edge: first ring is the 2px gap (page color),
+     second ring is the visible border. */
   box-shadow:
-    0 0 0 1.5px rgba(255, 255, 255, 0.08),
+    0 0 0 2px var(--ground),
+    0 0 0 3px var(--hairline-strong),
     0 24px 60px -24px rgba(0, 0, 0, 0.8);
 }
 
