@@ -125,12 +125,12 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
       qc.height = qrSize
       const qctx = qc.getContext('2d')!
       if (style === 'dynamic') {
-        // Gaps: blurred shader region tinted with the chosen color; modules: crisp shader.
+        // Gaps: chosen color at full opacity; modules: crisp shader showing through.
         qctx.save()
         roundRectPath(qctx, 0, 0, qrSize, rad)
         qctx.clip()
         qctx.drawImage(shaderCanvas, 0, 0, shaderCanvas.width, shaderCanvas.height, -qx, -qy, w, h)
-        qctx.fillStyle = rgba(state.qr.color, 0.5)
+        qctx.fillStyle = rgba(state.qr.color, 1)
         qctx.fillRect(0, 0, qrSize, qrSize)
         qctx.restore()
         const mod = document.createElement('canvas')

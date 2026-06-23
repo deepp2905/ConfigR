@@ -244,8 +244,8 @@ html.qr-cur-nesw * {
   user-select: none;
 }
 
-/* Treatment: dynamic — carve from the shader. Gaps show a darkened+blurred shader;
-   module holes reveal the same shader crisp/bright behind. */
+/* Treatment: dynamic — carve from the shader. Gaps are filled with the chosen
+   color at full opacity; module holes reveal the shader crisp/bright behind. */
 .qr-dynamic {
   position: absolute;
   inset: 0;

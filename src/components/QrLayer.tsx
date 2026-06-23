@@ -161,7 +161,7 @@ export function QrLayer({
             style={{
               opacity: qr.opacity,
               borderRadius: radius,
-              background: rgba(qr.color, 0.5),
+              background: rgba(qr.color, 1),
               mixBlendMode: blend,
               WebkitMaskImage: `url(${maskUrl})`,
               maskImage: `url(${maskUrl})`,
