@@ -1147,11 +1147,17 @@ input[type='range']::-moz-range-thumb {
     gap: 48px;
   }
 
-  /* Control panel pinned to the left; preview fills and centers in the rest. */
+  /* Control panel pinned to the left; preview fills and centers in the rest.
+     If the panel is taller than the viewport, only the panel scrolls (it sticks
+     to the top and scrolls internally) — never the whole page. */
   .controls {
     order: 0;
     width: 400px;
     flex-shrink: 0;
+    position: sticky;
+    top: 24px;
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
   }
 
   .preview-stage {
