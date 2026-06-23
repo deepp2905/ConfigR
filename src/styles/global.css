@@ -57,7 +57,6 @@ option,
 .section-head,
 .qr-field-label,
 .hero-label,
-.hero-hint,
 .brand-name,
 .tagline,
 .preview-meta,
@@ -533,12 +532,6 @@ html.qr-cur-nesw * {
 .hero-input:focus {
   border-color: var(--text-2);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
-}
-
-.hero-hint {
-  margin: 10px 2px 0;
-  font-size: 12.5px;
-  color: var(--text-3);
 }
 
 /* ② Style — visual picker */

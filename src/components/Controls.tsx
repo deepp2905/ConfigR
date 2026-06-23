@@ -106,7 +106,6 @@ export function Controls() {
           value={state.url}
           onChange={(e) => dispatch({ type: 'SET_URL', url: e.target.value })}
         />
-        {!state.url && <p className="hero-hint">Add a URL to make the QR scannable.</p>}
       </div>
 
       {/* ② Style — pick a vibe fast */}
