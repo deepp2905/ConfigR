@@ -595,7 +595,9 @@ html.qr-cur-nesw * {
   position: relative;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  /* Square dots whose corner radius (7%) matches the QR module rounding,
+     keeping the radius proportional to the swatch (and QR square) size. */
+  border-radius: 7%;
   border: none;
   padding: 0;
   transition: transform 0.1s ease, box-shadow 0.15s ease;
