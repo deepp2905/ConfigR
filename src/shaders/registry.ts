@@ -53,8 +53,6 @@ const PALETTES = {
   citrus: { id: 'citrus', label: 'Citrus', colors: ['#f5f24a', '#7ce04a', '#2bd476'], colorBack: '#04261a' },
   // Sunburst: warm analogous (orange → amber → yellow).
   sunburst: { id: 'sunburst', label: 'Sunburst', colors: ['#ff6b3d', '#ffae3d', '#f5f24a'], colorBack: '#1c0e00' },
-  // Electric: monochromatic blue on black.
-  electric: { id: 'electric', label: 'Electric', colors: ['#7cc9ff', '#19a9ff', '#000814'], colorBack: '#000814' },
 } satisfies Record<string, Palette>
 
 /** Every palette is available for every shader. */
@@ -62,7 +60,6 @@ export const ALL_PALETTES: Palette[] = [
   PALETTES.configPop,
   PALETTES.sunburst,
   PALETTES.citrus,
-  PALETTES.electric,
   PALETTES.sunset,
   PALETTES.ember,
   PALETTES.aurora,
