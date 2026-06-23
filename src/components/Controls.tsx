@@ -101,7 +101,7 @@ export function Controls() {
           className="hero-input"
           type="url"
           inputMode="url"
-          placeholder="https://your-link.com"
+          placeholder="https://example.com"
           value={state.url}
           onChange={(e) => dispatch({ type: 'SET_URL', url: e.target.value })}
         />
