@@ -75,7 +75,7 @@ export function CustomColor({ value, onChange, onCommit }: CustomColorProps) {
             value={text}
             onChange={(e) => onHexInput(e.target.value)}
             placeholder="RRGGBB"
-            spellCheck={false}
+            spellCheck={true}
             autoFocus
             aria-label="Hex color"
           />
