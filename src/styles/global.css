@@ -230,10 +230,10 @@ html.qr-cur-nesw * {
   cursor: grabbing;
 }
 
-/* Outline only when selected; aligned exactly to the box edges (= handle centers). */
+/* Outline only when selected; offset 4px outward so it floats off the QR edges. */
 .qr-box.is-selected {
   outline: 1px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 0;
+  outline-offset: 4px;
 }
 
 .qr-img {
@@ -256,7 +256,7 @@ html.qr-cur-nesw * {
   mask-repeat: no-repeat;
 }
 
-/* Subtle corner handles, centered on the box corners; shown only when selected. */
+/* Subtle corner handles, centered on the 4px-offset selection outline; shown only when selected. */
 .qr-handle {
   position: absolute;
   width: 9px;
@@ -273,23 +273,23 @@ html.qr-cur-nesw * {
 }
 
 .qr-handle.tl {
-  top: -4.5px;
-  left: -4.5px;
+  top: -8.5px;
+  left: -8.5px;
   cursor: nwse-resize;
 }
 .qr-handle.tr {
-  top: -4.5px;
-  right: -4.5px;
+  top: -8.5px;
+  right: -8.5px;
   cursor: nesw-resize;
 }
 .qr-handle.bl {
-  bottom: -4.5px;
-  left: -4.5px;
+  bottom: -8.5px;
+  left: -8.5px;
   cursor: nesw-resize;
 }
 .qr-handle.br {
-  bottom: -4.5px;
-  right: -4.5px;
+  bottom: -8.5px;
+  right: -8.5px;
   cursor: nwse-resize;
 }
 
