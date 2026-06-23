@@ -103,7 +103,6 @@ export function Controls() {
           type="url"
           inputMode="url"
           autoFocus
-          placeholder="https://example.com"
           value={state.url}
           onChange={(e) => dispatch({ type: 'SET_URL', url: e.target.value })}
         />
