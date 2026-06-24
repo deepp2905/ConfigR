@@ -55,13 +55,17 @@ const PALETTES = {
   sunburst: { id: 'sunburst', label: 'Sunburst', colors: ['#ff6b3d', '#ffae3d', '#f5f24a'], colorBack: '#1c0e00' },
 } satisfies Record<string, Palette>
 
-/** Every palette is available for every shader. */
+/**
+ * Every palette is available for every shader. Ordered around the color wheel by the
+ * hue of each palette's darkest (lowest-HSV-value) color, with the neutral (Graphite) last:
+ *   ember ~23° · sunburst ~30° · citrus ~159° · config pop ~188° · aurora ~247° · sunset ~256°.
+ */
 export const ALL_PALETTES: Palette[] = [
   PALETTES.ember,
   PALETTES.sunburst,
   PALETTES.citrus,
-  PALETTES.aurora,
   PALETTES.configPop,
+  PALETTES.aurora,
   PALETTES.sunset,
   PALETTES.mono,
 ]
