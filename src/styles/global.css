@@ -506,7 +506,7 @@ html.qr-cur-nesw * {
 .controls-scroll {
   display: flex;
   flex-direction: column;
-  padding: 0 33px;
+  padding: 0 22px;
 }
 
 .section {
@@ -963,7 +963,7 @@ input[type='range']::-moz-range-thumb {
 /* Export (pinned at the very bottom of the control panel, accent) */
 .export-bar {
   display: flex;
-  padding: 33px 33px 0;
+  padding: 33px 22px 0;
   margin-top: 33px;
   border-top: 1px solid var(--hairline);
 }
@@ -1228,7 +1228,7 @@ input[type='range']::-moz-range-thumb {
 
   .controls-scroll,
   .export-bar {
-    padding-left: 27px;
-    padding-right: 27px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
 }
