@@ -63,6 +63,7 @@ export function Controls() {
   const [error, setError] = useState<string | null>(null)
   const [showNoQr, setShowNoQr] = useState(false)
   const [fineTune, setFineTune] = useState(false)
+  const [qrOpen, setQrOpen] = useState(false)
 
   // The 3 most important fine-tune sliders: the top per-shader param, plus Scale and Seed.
   const scaleParam = def.params.find((p) => p.key === 'scale')
@@ -197,12 +198,20 @@ export function Controls() {
         </div>
       </div>
 
-      {/* QR */}
+      {/* QR — collapsible dropdown */}
       <div className="section">
-        <div className="section-head">
+        <button
+          className="dropdown-head"
+          aria-expanded={qrOpen}
+          onClick={() => setQrOpen((v) => !v)}
+        >
           <span className="section-label">QR code</span>
-        </div>
-        <div className="qr-fields">
+          <span className={`chevron ${qrOpen ? 'is-open' : ''}`} aria-hidden>
+            <Chevron />
+          </span>
+        </button>
+        <div className={`dropdown-body ${qrOpen ? 'is-open' : ''}`}>
+          <div className="dropdown-inner qr-fields">
           <div className="qr-field">
             <span className="qr-field-label">Color</span>
             <div className="swatches">
@@ -264,6 +273,7 @@ export function Controls() {
                 <span className="knob" />
               </button>
             </div>
+          </div>
           </div>
         </div>
       </div>
