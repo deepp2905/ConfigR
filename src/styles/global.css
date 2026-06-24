@@ -61,6 +61,7 @@ option,
 .tagline,
 .preview-meta,
 .style-name,
+.chip,
 .slider-head,
 .switch-row,
 .qr-guide,
@@ -939,6 +940,28 @@ input[type='range']::-moz-range-thumb {
   border: none;
   background: none;
   cursor: pointer;
+}
+
+.dropdown-head:disabled {
+  cursor: not-allowed;
+}
+
+/* Section label stays muted while the section is disabled (no valid URL yet). */
+.dropdown-head:disabled .section-label {
+  color: var(--text-3);
+}
+
+/* Hint chip shown in place of the chevron until a valid URL is entered. */
+.chip {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-3);
+  background: var(--input);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 
 .dropdown-head .chevron {

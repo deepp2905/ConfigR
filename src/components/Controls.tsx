@@ -63,11 +63,18 @@ export function Controls() {
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showNoQr, setShowNoQr] = useState(false)
+  // The QR dropdown is only usable once there's a valid link to encode.
+  const urlValid = isValidUrl(state.url)
+
   // Accordion: only one collapsible section (Fine-tune / QR) is open at a time.
   const [openSection, setOpenSection] = useState<'finetune' | 'qr' | null>(null)
   const fineTune = openSection === 'finetune'
-  const qrOpen = openSection === 'qr'
-  const toggleSection = (s: 'finetune' | 'qr') => setOpenSection((cur) => (cur === s ? null : s))
+  // Force the QR section shut whenever the link isn't valid.
+  const qrOpen = openSection === 'qr' && urlValid
+  const toggleSection = (s: 'finetune' | 'qr') => {
+    if (s === 'qr' && !urlValid) return
+    setOpenSection((cur) => (cur === s ? null : s))
+  }
 
   // The 3 most important fine-tune sliders: the top per-shader param, plus Scale and Seed.
   const scaleParam = def.params.find((p) => p.key === 'scale')
@@ -201,17 +208,23 @@ export function Controls() {
         </div>
       </div>
 
-      {/* QR — collapsible dropdown */}
+      {/* QR — collapsible dropdown (disabled until a valid link exists) */}
       <div className="section is-collapsible">
         <button
           className="dropdown-head"
           aria-expanded={qrOpen}
+          aria-disabled={!urlValid}
+          disabled={!urlValid}
           onClick={() => toggleSection('qr')}
         >
           <span className="section-label">QR code</span>
-          <span className={`chevron ${qrOpen ? 'is-open' : ''}`} aria-hidden>
-            <Chevron />
-          </span>
+          {urlValid ? (
+            <span className={`chevron ${qrOpen ? 'is-open' : ''}`} aria-hidden>
+              <Chevron />
+            </span>
+          ) : (
+            <span className="chip">Add a valid URL</span>
+          )}
         </button>
         <div className={`dropdown-body ${qrOpen ? 'is-open' : ''}`}>
           <div className="dropdown-inner qr-fields">
