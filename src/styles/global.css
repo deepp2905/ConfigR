@@ -167,7 +167,7 @@ summary:focus-visible,
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 28px;
 }
 
 /* Sizing wrapper. Holds the device aspect ratio and hosts the ambient glow,
@@ -208,7 +208,7 @@ summary:focus-visible,
      thicker, mildly translucent gray border. */
   box-shadow:
     0 0 0 6px var(--ground),
-    0 0 0 9px rgba(180, 184, 196, 0.45),
+    0 0 0 9px rgba(180, 184, 196, 0.3),
     0 24px 60px -24px rgba(0, 0, 0, 0.8);
 }
 
