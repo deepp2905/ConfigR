@@ -61,11 +61,13 @@ export function PhonePreview() {
         className="phone-stage"
         style={{ aspectRatio: `${device.width} / ${device.height}` }}
       >
-        {/* Subtle ambient glow: the same gradient, slowly moving, heavily blurred and faint. */}
+        {/* Subtle ambient glow: the same gradient, static, heavily blurred and faint.
+            Static on purpose — motion isn't worth the render cost when it's this blurred. */}
         <Shader
           key={`glow-${def.id}`}
           {...shaderProps}
-          speed={0.6}
+          speed={0}
+          frame={state.seed}
           aria-hidden
           className="phone-glow"
         />
