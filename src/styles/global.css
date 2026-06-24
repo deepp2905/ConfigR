@@ -63,7 +63,6 @@ option,
 .style-name,
 .slider-head,
 .switch-row,
-.qr-style-btn,
 .qr-guide,
 .config-mark,
 .ui-select-trigger,
@@ -986,34 +985,6 @@ input[type='range']::-moz-range-thumb {
 }
 
 /* ---------- QR-style selector (3 rectangle buttons) ---------- */
-.qr-style-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-}
-
-.qr-style-btn {
-  border: 1px solid var(--hairline);
-  background: var(--input);
-  color: var(--text-2);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 9px 8px;
-  border-radius: var(--radius-sm);
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-.qr-style-btn:not(.is-active):hover {
-  color: var(--text);
-  border-color: var(--hairline-strong);
-}
-
-.qr-style-btn.is-active {
-  background: #fff;
-  color: var(--ground);
-  border-color: #fff;
-}
-
 /* Custom-color dot (+) — flex centers the SVG, which stays centered under hover scale. */
 .cc {
   position: relative;

@@ -233,13 +233,13 @@ export function Controls() {
 
           <div className="qr-field">
             <span className="qr-field-label">Style</span>
-            <div className="qr-style-row" role="tablist" aria-label="QR style">
+            <div className="segmented" role="tablist" aria-label="QR style">
               {QR_STYLES.map((s) => (
                 <button
                   key={s.id}
                   role="tab"
                   aria-selected={state.qrStyle === s.id}
-                  className={`qr-style-btn ${state.qrStyle === s.id ? 'is-active' : ''}`}
+                  className={state.qrStyle === s.id ? 'is-active' : ''}
                   onClick={() => dispatch({ type: 'SET_QR_STYLE', value: s.id })}
                 >
                   {s.label}
