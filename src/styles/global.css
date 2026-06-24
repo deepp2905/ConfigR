@@ -1005,6 +1005,9 @@ input[type='range']::-moz-range-thumb {
   min-height: 0;
   padding: 0 6px;
   margin: 0 -6px;
+  /* Fade contents in/out in sync with the grid-rows expand/collapse. */
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
 }
 
 /* Space out stacked sliders in the Fine-tune dropdown (the QR inner sets its own gap). */
@@ -1020,6 +1023,7 @@ input[type='range']::-moz-range-thumb {
 .dropdown-body.is-open > .dropdown-inner {
   padding-top: 6px;
   padding-bottom: 30px;
+  opacity: 1;
 }
 
 /* Export (pinned at the very bottom of the control panel, accent) */
