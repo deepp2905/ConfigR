@@ -967,6 +967,13 @@ input[type='range']::-moz-range-thumb {
   min-height: 0;
 }
 
+/* Space out stacked sliders in the Fine-tune dropdown (the QR inner sets its own gap). */
+.dropdown-inner:not(.qr-fields) {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
 /* The header's bottom padding already provides the gap to the revealed content;
    add a little extra breathing room below the content when open. */
 .dropdown-body.is-open > .dropdown-inner {
