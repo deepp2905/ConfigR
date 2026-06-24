@@ -473,13 +473,17 @@ html.qr-cur-nesw * {
   background: var(--panel);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
-  padding: 22px;
+  /* Horizontal padding lives on the inner rows (.controls-scroll/.export-bar) so the
+     scroll box has the inset itself — otherwise overflow-y:auto clips the active
+     ring (box-shadow) on the left-hand tiles/swatches. */
+  padding: 22px 0;
 }
 
 /* Scrollable content area; on desktop it grows to fill, pushing Download to the bottom. */
 .controls-scroll {
   display: flex;
   flex-direction: column;
+  padding: 0 22px;
 }
 
 .section {
@@ -920,7 +924,7 @@ input[type='range']::-moz-range-thumb {
 /* Export (pinned at the very bottom of the control panel, accent) */
 .export-bar {
   display: flex;
-  padding-top: 22px;
+  padding: 22px 22px 0;
   margin-top: 22px;
   border-top: 1px solid var(--hairline);
 }
@@ -1206,8 +1210,15 @@ input[type='range']::-moz-range-thumb {
     height: clamp(300px, 52vh, 520px);
   }
 
+  /* Keep horizontal padding on the inner rows (see desktop note); tighten only vertically. */
   .controls {
-    padding: 18px;
+    padding: 18px 0;
+  }
+
+  .controls-scroll,
+  .export-bar {
+    padding-left: 18px;
+    padding-right: 18px;
   }
 
   /* The floating pill spans the screen width with a comfortable inset. */
