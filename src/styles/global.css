@@ -999,7 +999,7 @@ input[type='range']::-moz-range-thumb {
 .dropdown-inner:not(.qr-fields) {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 28px;
 }
 
 /* The header's bottom padding provides the gap above; pad the top/bottom of the clip
