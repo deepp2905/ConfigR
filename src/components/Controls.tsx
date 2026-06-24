@@ -127,7 +127,7 @@ export function Controls() {
       {/* ② Style — pick a vibe fast */}
       <div className="section">
         <div className="section-head">
-          <span className="section-label">Style</span>
+          <span className="section-label">Background style</span>
         </div>
 
         <div className="style-grid">
@@ -147,7 +147,7 @@ export function Controls() {
       {/* Color — shader palette */}
       <div className="section">
         <div className="section-head">
-          <span className="section-label">Color</span>
+          <span className="section-label">Background color</span>
         </div>
         <div className="swatches">
           {ALL_PALETTES.map((p) => (
@@ -170,7 +170,7 @@ export function Controls() {
           aria-expanded={fineTune}
           onClick={() => toggleSection('finetune')}
         >
-          <span className="section-label">Fine-tune</span>
+          <span className="section-label">Fine-tune background</span>
           <span className={`chevron ${fineTune ? 'is-open' : ''}`} aria-hidden>
             <Chevron />
           </span>
