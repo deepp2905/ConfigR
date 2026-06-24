@@ -228,8 +228,8 @@ summary:focus-visible,
   height: 118%;
   transform: translate(-50%, -50%);
   z-index: 0;
-  opacity: 0.35;
-  filter: blur(60px) saturate(130%);
+  opacity: 0;
+  filter: blur(48px) saturate(135%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -579,7 +579,8 @@ html.qr-cur-nesw * {
 .controls-scroll {
   display: flex;
   flex-direction: column;
-  padding: 33px 22px 25px;
+  /* No top padding: the sticky .hero owns the top spacing so it can pin flush to the top. */
+  padding: 0 22px 25px;
 }
 
 .section {
@@ -622,11 +623,17 @@ html.qr-cur-nesw * {
 
 /* ① Hero link */
 .hero {
-  /* Pull out to the panel edges so the divider spans full width, and cancel the scroll
-     container's 33px top padding so the hero keeps equal 33px top/bottom padding itself. */
-  position: relative;
-  margin: -33px -22px 0;
+  /* Sticky to the top of the scroll area so the link field is always fully visible, even
+     when the QR/other sections below are expanded. Bleeds out horizontally so its divider
+     spans the full panel width; carries its own equal top/bottom padding (the scroll
+     container's top padding is removed to make room — see .controls-scroll). */
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin: 0 -22px;
   padding: 33px 22px;
+  /* Solid panel base so content scrolling underneath doesn't show through the glass input. */
+  background: var(--panel);
   border-bottom: 1px solid var(--hairline);
   /* Clip the ambient glow to the hero block. */
   overflow: hidden;
@@ -643,18 +650,7 @@ html.qr-cur-nesw * {
   height: 220%;
   transform: translate(-50%, -50%);
   z-index: 0;
-  opacity: 0.55;
   filter: blur(48px) saturate(135%);
-  pointer-events: none;
-}
-
-/* A faint scrim keeps the input/label legible over the glow. */
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: color-mix(in srgb, var(--panel) 35%, transparent);
   pointer-events: none;
 }
 
@@ -670,14 +666,18 @@ html.qr-cur-nesw * {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-2);
+  color: var(--text);
   margin-bottom: 10px;
 }
 
 .hero-input {
   width: 100%;
   border: 1px solid var(--hairline);
-  background: var(--input);
+  /* Frosted glass matching the Randomize button / screensize pill, so the ambient glow
+     behind it reads softly through the field. */
+  background: color-mix(in srgb, var(--panel) 70%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
   color: var(--text);
   border-radius: var(--radius);
   padding: 16px 16px;
@@ -1437,14 +1437,14 @@ input[type='range']:active::-moz-range-thumb {
   }
 
   /* Tighten vertical padding on the scroll area (see desktop note: padding lives on the
-     inner rows, not .controls). */
+     inner rows, not .controls). No top padding — the sticky hero owns it. */
   .controls-scroll {
-    padding: 27px 18px;
+    padding: 0 18px 27px;
   }
 
   /* Match the hero's edge-bleed margins/padding to the tighter mobile scroll padding. */
   .hero {
-    margin: -27px -18px 0;
+    margin: 0 -18px;
     padding: 27px 18px;
   }
 
