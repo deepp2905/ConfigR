@@ -980,10 +980,11 @@ input[type='range']::-moz-range-thumb {
 }
 
 /* The header's bottom padding provides the gap above; pad the top/bottom of the clip
-   box when open so the first row's ring and the last slider's thumb aren't cropped. */
+   box when open so the first row's ring and the last slider's thumb aren't cropped and
+   the content has real breathing room before the section border. */
 .dropdown-body.is-open > .dropdown-inner {
   padding-top: 6px;
-  padding-bottom: 10px;
+  padding-bottom: 30px;
 }
 
 /* Export (pinned at the very bottom of the control panel, accent) */
