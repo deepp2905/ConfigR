@@ -777,7 +777,7 @@ html.qr-cur-nesw * {
 .qr-fields {
   display: flex;
   flex-direction: column;
-  gap: 33px;
+  gap: 22px;
 }
 
 .qr-field {
