@@ -3,6 +3,7 @@ import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK, QR_STYLES } from '../
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { NoQrModal } from './NoQrModal'
+import { Chevron } from './Chevron'
 import { isValidUrl } from '../lib/url'
 
 const QR_COLORS: { id: string; label: string; value: string }[] = [
@@ -149,18 +150,51 @@ export function Controls() {
         </div>
       </div>
 
-      {/* Fine-tune — a toggle that reveals a floating pill of the 3 key sliders */}
-      <div className="finetune-toggle switch-row">
-        <span>Fine-tune</span>
+      {/* Fine-tune — collapsible dropdown of the 3 key sliders */}
+      <div className="section">
         <button
-          role="switch"
-          aria-checked={fineTune}
-          aria-label="Show fine-tune sliders"
-          className={`switch ${fineTune ? 'on' : ''}`}
+          className="dropdown-head"
+          aria-expanded={fineTune}
           onClick={() => setFineTune((v) => !v)}
         >
-          <span className="knob" />
+          <span className="section-label">Fine-tune</span>
+          <span className={`chevron ${fineTune ? 'is-open' : ''}`} aria-hidden>
+            <Chevron />
+          </span>
         </button>
+        <div className={`dropdown-body ${fineTune ? 'is-open' : ''}`}>
+          <div className="dropdown-inner">
+            {topParam && (
+              <Slider
+                label={topParam.label}
+                value={state.params[topParam.key] ?? topParam.default}
+                min={topParam.min}
+                max={topParam.max}
+                step={topParam.step}
+                onChange={(v) => dispatch({ type: 'SET_PARAM', key: topParam.key, value: v })}
+              />
+            )}
+            {scaleParam && (
+              <Slider
+                label={scaleParam.label}
+                value={state.params[scaleParam.key] ?? scaleParam.default}
+                min={scaleParam.min}
+                max={scaleParam.max}
+                step={scaleParam.step}
+                onChange={(v) => dispatch({ type: 'SET_PARAM', key: scaleParam.key, value: v })}
+              />
+            )}
+            <Slider
+              label="Seed"
+              value={state.seed}
+              min={0}
+              max={9999}
+              step={1}
+              format={(v) => String(Math.round(v))}
+              onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
+            />
+          </div>
+        </div>
       </div>
 
       {/* QR */}
@@ -253,43 +287,6 @@ export function Controls() {
         />
       )}
     </div>
-
-      {/* Floating fine-tune pill — the 3 key sliders, near the bottom of the viewport */}
-      {fineTune && (
-        <div className="finetune-pill" role="group" aria-label="Fine-tune">
-          {topParam && (
-            <Slider
-              key={topParam.key}
-              label={topParam.label}
-              value={state.params[topParam.key] ?? topParam.default}
-              min={topParam.min}
-              max={topParam.max}
-              step={topParam.step}
-              onChange={(v) => dispatch({ type: 'SET_PARAM', key: topParam.key, value: v })}
-            />
-          )}
-          {scaleParam && (
-            <Slider
-              key={scaleParam.key}
-              label={scaleParam.label}
-              value={state.params[scaleParam.key] ?? scaleParam.default}
-              min={scaleParam.min}
-              max={scaleParam.max}
-              step={scaleParam.step}
-              onChange={(v) => dispatch({ type: 'SET_PARAM', key: scaleParam.key, value: v })}
-            />
-          )}
-          <Slider
-            label="Seed"
-            value={state.seed}
-            min={0}
-            max={9999}
-            step={1}
-            format={(v) => String(Math.round(v))}
-            onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
-          />
-        </div>
-      )}
     </>
   )
 }
