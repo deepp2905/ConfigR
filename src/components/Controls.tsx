@@ -313,7 +313,7 @@ export function Controls() {
         </button>
         <p className="credit">
           Created by{' '}
-          <a href="https://x.com/deepp205" target="_blank" rel="noopener noreferrer">
+          <a href="https://x.com/deepp3905" target="_blank" rel="noopener noreferrer">
             Deep Patel
           </a>
         </p>
