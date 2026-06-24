@@ -157,7 +157,8 @@ export function QrLayer({
       >
         {qrStyle === 'dynamic' && maskUrl && (
           <div
-            className="qr-dynamic"
+            key={maskUrl}
+            className="qr-dynamic qr-intro"
             style={{
               opacity: qr.opacity,
               borderRadius: radius,
@@ -171,7 +172,8 @@ export function QrLayer({
 
         {(qrStyle === 'duotone' || qrStyle === 'dots') && imgSrc && (
           <img
-            className="qr-img"
+            key={imgSrc}
+            className="qr-img qr-intro"
             src={imgSrc}
             alt="QR code"
             draggable={false}

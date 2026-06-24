@@ -280,6 +280,23 @@ html.qr-cur-nesw * {
   mask-repeat: no-repeat;
 }
 
+/* Intro when a (re)generated QR first appears: fade + scale up from 0.95.
+   Not 'forwards' so no lingering transform remains to break the mix-blend-mode. */
+@keyframes qr-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.qr-intro {
+  animation: qr-pop-in 0.2s ease-out;
+}
+
 /* Subtle corner handles, centered on the 4px-offset selection outline; shown only when selected. */
 .qr-handle {
   position: absolute;
