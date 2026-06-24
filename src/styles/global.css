@@ -476,6 +476,12 @@ html.qr-cur-nesw * {
   padding: 22px;
 }
 
+/* Scrollable content area; on desktop it grows to fill, pushing Download to the bottom. */
+.controls-scroll {
+  display: flex;
+  flex-direction: column;
+}
+
 .section {
   padding: 20px 0;
   border-bottom: 1px solid var(--hairline);
@@ -911,13 +917,12 @@ input[type='range']::-moz-range-thumb {
   }
 }
 
-/* Export (pinned, accent) */
+/* Export (pinned at the very bottom of the control panel, accent) */
 .export-bar {
-  position: sticky;
-  bottom: 10px;
-  z-index: 5;
-  padding-top: 18px;
   display: flex;
+  padding-top: 22px;
+  margin-top: 22px;
+  border-top: 1px solid var(--hairline);
 }
 
 .btn-export {
@@ -1134,29 +1139,34 @@ input[type='range']::-moz-range-thumb {
 @media (min-width: 900px) {
   .app-main {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 48px;
   }
 
-  /* Control panel pinned to the left; preview fills and centers in the rest.
-     If the panel is taller than the viewport, only the panel scrolls (it sticks
-     to the top and scrolls internally) — never the whole page. */
-  .controls {
+  /* Preview fills and centers in the space left of the control panel. */
+  .preview-stage {
     order: 0;
+    flex: 1;
+    min-width: 0;
+    align-self: center;
+    align-items: center;
+  }
+
+  /* Control panel pinned to the far right, full viewport height. The content
+     scrolls internally; Download stays pinned at the very bottom. */
+  .controls {
+    order: 1;
     width: 400px;
     flex-shrink: 0;
     position: sticky;
     top: 24px;
-    max-height: calc(100dvh - 48px);
-    overflow-y: auto;
+    height: calc(100dvh - 48px);
   }
 
-  .preview-stage {
-    order: 1;
+  .controls-scroll {
     flex: 1;
-    position: sticky;
-    top: 24px;
-    align-items: center;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   .phone-frame {

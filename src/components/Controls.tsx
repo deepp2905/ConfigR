@@ -92,6 +92,8 @@ export function Controls() {
   return (
     <>
     <div className="controls">
+      {/* Scrollable content; the Download bar stays pinned at the bottom. */}
+      <div className="controls-scroll">
       {/* ① Your link — the whole point */}
       <div className="hero">
         <label className="hero-label" htmlFor="link-input">
@@ -233,6 +235,7 @@ export function Controls() {
       </div>
 
       {error && <p className="error">{error}</p>}
+      </div>
 
       <div className="export-bar">
         <button className="btn-export" onClick={handleExport} disabled={exporting}>
