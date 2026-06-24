@@ -22,10 +22,12 @@ export function PhonePreview() {
   const normalizedUrl = normalizeUrl(state.url)
   const wasValidRef = useRef(false)
 
-  // Select the QR (show its outline + handles) the moment it's first created.
+  // Select the QR (show its resize outline + handles) the moment it appears, as a
+  // signifier that it can be moved/resized. Re-asserts every time it (re)appears.
   useEffect(() => {
     const valid = normalizedUrl !== null
     if (valid && !wasValidRef.current) setQrSelected(true)
+    if (!valid) setQrSelected(false)
     wasValidRef.current = valid
   }, [normalizedUrl])
 
