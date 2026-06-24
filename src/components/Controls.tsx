@@ -124,93 +124,8 @@ export function Controls() {
         />
       </div>
 
-      {/* ② Style — pick a vibe fast */}
-      <div className="section">
-        <div className="section-head">
-          <span className="section-label">Background style</span>
-        </div>
-
-        <div className="style-grid">
-          {SHADERS.map((s) => (
-            <button
-              key={s.id}
-              className={`style-tile ${s.id === state.shaderId ? 'is-active' : ''}`}
-              onClick={() => dispatch({ type: 'SET_SHADER', shaderId: s.id })}
-            >
-              <StyleTile def={s} />
-              <span className="style-name">{s.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Color — shader palette */}
-      <div className="section">
-        <div className="section-head">
-          <span className="section-label">Background color</span>
-        </div>
-        <div className="swatches">
-          {ALL_PALETTES.map((p) => (
-            <button
-              key={p.id}
-              className={`swatch ${p.id === state.paletteId ? 'is-active' : ''}`}
-              data-label={p.label}
-              aria-label={p.label}
-              onClick={() => dispatch({ type: 'SET_PALETTE', paletteId: p.id })}
-              style={{ background: `linear-gradient(135deg, ${p.colors.slice(0, 3).join(', ')})` }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Fine-tune — collapsible dropdown of the 3 key sliders */}
-      <div className="section is-collapsible">
-        <button
-          className="dropdown-head"
-          aria-expanded={fineTune}
-          onClick={() => toggleSection('finetune')}
-        >
-          <span className="section-label">Fine-tune background</span>
-          <span className={`chevron ${fineTune ? 'is-open' : ''}`} aria-hidden>
-            <Chevron />
-          </span>
-        </button>
-        <div className={`dropdown-body ${fineTune ? 'is-open' : ''}`}>
-          <div className="dropdown-inner">
-            {topParam && (
-              <Slider
-                label={topParam.label}
-                value={state.params[topParam.key] ?? topParam.default}
-                min={topParam.min}
-                max={topParam.max}
-                step={topParam.step}
-                onChange={(v) => dispatch({ type: 'SET_PARAM', key: topParam.key, value: v })}
-              />
-            )}
-            {scaleParam && (
-              <Slider
-                label={scaleParam.label}
-                value={state.params[scaleParam.key] ?? scaleParam.default}
-                min={scaleParam.min}
-                max={scaleParam.max}
-                step={scaleParam.step}
-                onChange={(v) => dispatch({ type: 'SET_PARAM', key: scaleParam.key, value: v })}
-              />
-            )}
-            <Slider
-              label="Seed"
-              value={state.seed}
-              min={0}
-              max={9999}
-              step={1}
-              format={(v) => String(Math.round(v))}
-              onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* QR — collapsible dropdown (disabled until a valid link exists) */}
+      {/* QR — collapsible dropdown (disabled until a valid link exists), kept right
+          below the link since it's the most directly link-related control. */}
       <div className="section is-collapsible">
         {urlValid ? (
           <button
@@ -300,6 +215,92 @@ export function Controls() {
               </button>
             </div>
           </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ② Style — pick a vibe fast */}
+      <div className="section">
+        <div className="section-head">
+          <span className="section-label">Background style</span>
+        </div>
+
+        <div className="style-grid">
+          {SHADERS.map((s) => (
+            <button
+              key={s.id}
+              className={`style-tile ${s.id === state.shaderId ? 'is-active' : ''}`}
+              onClick={() => dispatch({ type: 'SET_SHADER', shaderId: s.id })}
+            >
+              <StyleTile def={s} />
+              <span className="style-name">{s.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Color — shader palette */}
+      <div className="section">
+        <div className="section-head">
+          <span className="section-label">Background color</span>
+        </div>
+        <div className="swatches">
+          {ALL_PALETTES.map((p) => (
+            <button
+              key={p.id}
+              className={`swatch ${p.id === state.paletteId ? 'is-active' : ''}`}
+              data-label={p.label}
+              aria-label={p.label}
+              onClick={() => dispatch({ type: 'SET_PALETTE', paletteId: p.id })}
+              style={{ background: `linear-gradient(135deg, ${p.colors.slice(0, 3).join(', ')})` }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Fine-tune — collapsible dropdown of the 3 key sliders */}
+      <div className="section is-collapsible">
+        <button
+          className="dropdown-head"
+          aria-expanded={fineTune}
+          onClick={() => toggleSection('finetune')}
+        >
+          <span className="section-label">Fine-tune background</span>
+          <span className={`chevron ${fineTune ? 'is-open' : ''}`} aria-hidden>
+            <Chevron />
+          </span>
+        </button>
+        <div className={`dropdown-body ${fineTune ? 'is-open' : ''}`}>
+          <div className="dropdown-inner">
+            {topParam && (
+              <Slider
+                label={topParam.label}
+                value={state.params[topParam.key] ?? topParam.default}
+                min={topParam.min}
+                max={topParam.max}
+                step={topParam.step}
+                onChange={(v) => dispatch({ type: 'SET_PARAM', key: topParam.key, value: v })}
+              />
+            )}
+            {scaleParam && (
+              <Slider
+                label={scaleParam.label}
+                value={state.params[scaleParam.key] ?? scaleParam.default}
+                min={scaleParam.min}
+                max={scaleParam.max}
+                step={scaleParam.step}
+                onChange={(v) => dispatch({ type: 'SET_PARAM', key: scaleParam.key, value: v })}
+              />
+            )}
+            <Slider
+              label="Seed"
+              value={state.seed}
+              min={0}
+              max={9999}
+              step={1}
+              format={(v) => String(Math.round(v))}
+              onChange={(v) => dispatch({ type: 'SET_SEED', value: v })}
+            />
           </div>
         </div>
       </div>
