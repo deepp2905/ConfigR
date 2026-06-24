@@ -311,6 +311,12 @@ export function Controls() {
         <button className="btn-export" onClick={handleExport} disabled={exporting}>
           {exporting ? 'Rendering…' : 'Download'}
         </button>
+        <p className="credit">
+          Created by{' '}
+          <a href="https://x.com/deepp205" target="_blank" rel="noopener noreferrer">
+            Deep Patel
+          </a>
+        </p>
       </div>
 
       {showNoQr && (
