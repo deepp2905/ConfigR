@@ -475,18 +475,18 @@ html.qr-cur-nesw * {
   /* Horizontal padding lives on the inner rows (.controls-scroll/.export-bar) so the
      scroll box has the inset itself — otherwise overflow-y:auto clips the active
      ring (box-shadow) on the left-hand tiles/swatches. */
-  padding: 22px 0;
+  padding: 33px 0;
 }
 
 /* Scrollable content area; on desktop it grows to fill, pushing Download to the bottom. */
 .controls-scroll {
   display: flex;
   flex-direction: column;
-  padding: 0 22px;
+  padding: 0 33px;
 }
 
 .section {
-  padding: 20px 0;
+  padding: 30px 0;
   border-bottom: 1px solid var(--hairline);
 }
 
@@ -498,7 +498,7 @@ html.qr-cur-nesw * {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 21px;
 }
 
 .section-label {
@@ -688,7 +688,7 @@ html.qr-cur-nesw * {
 .qr-fields {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 33px;
 }
 
 .qr-field {
@@ -880,14 +880,14 @@ input[type='range']::-moz-range-thumb {
 
 /* Inner content gets its top padding only when open, so collapsed height is truly 0. */
 .dropdown-body.is-open > .dropdown-inner {
-  padding-top: 18px;
+  padding-top: 27px;
 }
 
 /* Export (pinned at the very bottom of the control panel, accent) */
 .export-bar {
   display: flex;
-  padding: 22px 22px 0;
-  margin-top: 22px;
+  padding: 33px 33px 0;
+  margin-top: 33px;
   border-top: 1px solid var(--hairline);
 }
 
@@ -1174,12 +1174,12 @@ input[type='range']::-moz-range-thumb {
 
   /* Keep horizontal padding on the inner rows (see desktop note); tighten only vertically. */
   .controls {
-    padding: 18px 0;
+    padding: 27px 0;
   }
 
   .controls-scroll,
   .export-bar {
-    padding-left: 18px;
-    padding-right: 18px;
+    padding-left: 27px;
+    padding-right: 27px;
   }
 }
