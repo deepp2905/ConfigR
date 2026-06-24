@@ -1343,6 +1343,15 @@ input[type='range']:active::-moz-range-thumb {
     height: clamp(300px, 52vh, 520px);
   }
 
+  /* On the smaller mobile mockup: thinner border ring and softer corners. */
+  .phone-frame {
+    border-radius: 24px;
+    box-shadow:
+      0 0 0 5px var(--ground),
+      0 0 0 6.5px rgba(180, 184, 196, 0.3),
+      0 24px 60px -24px rgba(0, 0, 0, 0.8);
+  }
+
   /* Tighten vertical padding on the scroll area (see desktop note: padding lives on the
      inner rows, not .controls). */
   .controls-scroll {
