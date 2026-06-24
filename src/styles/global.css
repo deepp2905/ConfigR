@@ -505,7 +505,7 @@ html.qr-cur-nesw * {
 
 /* The pill's open menu shares the same frosted-glass treatment. */
 .ui-select.pill .ui-select-menu {
-  background: color-mix(in srgb, var(--menu) 78%, transparent);
+  background: color-mix(in srgb, var(--menu) 68%, transparent);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
 }
