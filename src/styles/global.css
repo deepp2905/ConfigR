@@ -60,6 +60,7 @@ option,
 .brand-name,
 .tagline,
 .preview-meta,
+.style-name,
 .slider-head,
 .switch-row,
 .qr-style-btn,
@@ -570,6 +571,51 @@ html.qr-cur-nesw * {
 .hero-input:focus {
   border-color: var(--text-2);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+/* ② Style — visual picker */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.style-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.style-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--hairline);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.style-tile:hover .style-thumb {
+  border-color: var(--hairline-strong);
+}
+
+.style-tile.is-active .style-thumb {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px #fff;
+}
+
+.style-name {
+  font-size: 12px;
+  text-align: center;
+  color: var(--text-2);
+}
+
+.style-tile.is-active .style-name {
+  color: var(--text);
+  font-weight: 600;
 }
 
 /* Palette swatches */
