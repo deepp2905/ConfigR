@@ -4,7 +4,6 @@ import { getDevice, DEVICE_PRESETS } from '../devices/presets'
 import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { normalizeUrl } from '../lib/url'
 import { QrLayer } from './QrLayer'
-import { ShaderGlow } from './ShaderGlow'
 import { Select } from './Select'
 import { DiceIcon } from './DiceIcon'
 
@@ -64,8 +63,16 @@ export function PhonePreview() {
         className="phone-stage"
         style={{ aspectRatio: `${device.width} / ${device.height}` }}
       >
-        {/* Ambient glow: the same gradient, static, heavily blurred and faint. */}
-        <ShaderGlow className="phone-glow" />
+        {/* Subtle ambient glow: the same gradient, static, heavily blurred and faint.
+            Static on purpose — motion isn't worth the render cost when it's this blurred. */}
+        <Shader
+          key={`glow-${def.id}`}
+          {...shaderProps}
+          speed={0}
+          frame={state.seed}
+          aria-hidden
+          className="phone-glow"
+        />
         <div className="phone-frame" ref={frameRef}>
         <Shader
           key={def.id}
