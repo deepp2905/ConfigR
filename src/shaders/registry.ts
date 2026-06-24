@@ -88,14 +88,15 @@ export const SHADERS: ShaderDef[] = [
     id: 'warp',
     label: 'Warp',
     Component: Warp as unknown as FC<Record<string, unknown>>,
-    // Swirl, distortion and proportion are fixed (abstracted from the user and Randomize);
-    // only softness + scale tweak.
-    base: { shape: 'checks', swirl: 0.3, distortion: 0.1, proportion: 0.5 },
+    // Swirl, distortion, proportion and softness are fixed (abstracted from the user and
+    // Randomize). Swirl layers + scale tweak — swirl-iteration count changes the warp's
+    // layered complexity far more visibly than softness did.
+    base: { shape: 'checks', swirl: 0.3, distortion: 0.1, proportion: 0.5, softness: 1 },
     // The default 'checks' warp reads as muddy blobs at thumbnail size; warped stripes
     // convey the flowing-distortion feel far better.
     tile: { shape: 'stripes', distortion: 0.45, swirl: 0.85, proportion: 0.4, scale: 0.85 },
     params: [
-      { key: 'softness', label: 'Softness', min: 0.4, max: 1.5, step: 0.01, default: 1 },
+      { key: 'swirlIterations', label: 'Swirl layers', min: 1, max: 12, step: 1, default: 8 },
       { key: 'scale', label: 'Scale', min: 0.6, max: 2, step: 0.01, default: 1 },
     ],
   },
