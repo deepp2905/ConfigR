@@ -57,12 +57,12 @@ const PALETTES = {
 
 /** Every palette is available for every shader. */
 export const ALL_PALETTES: Palette[] = [
-  PALETTES.configPop,
+  PALETTES.ember,
   PALETTES.sunburst,
   PALETTES.citrus,
-  PALETTES.sunset,
-  PALETTES.ember,
   PALETTES.aurora,
+  PALETTES.configPop,
+  PALETTES.sunset,
   PALETTES.mono,
 ]
 
