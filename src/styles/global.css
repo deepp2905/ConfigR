@@ -585,6 +585,7 @@ html.qr-cur-nesw * {
 .section {
   padding: 30px 0;
   border-bottom: 1px solid var(--hairline);
+  transition: border-color 0.2s ease-out;
 }
 
 .section:first-child {
@@ -596,6 +597,12 @@ html.qr-cur-nesw * {
 .section.is-collapsible {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+/* While a collapsible section is open, fade out its bottom divider so the expanded
+   content reads as one block (0.2s ease-out, in step with the panel opening). */
+.section.is-collapsible:has(.dropdown-body.is-open) {
+  border-bottom-color: transparent;
 }
 
 .section-head {
