@@ -622,7 +622,10 @@ html.qr-cur-nesw * {
 
 /* ① Hero link */
 .hero {
-  padding-bottom: 22px;
+  /* Pull out to the panel edges so the divider spans full width, and cancel the scroll
+     container's 33px top padding so the hero keeps equal 33px top/bottom padding itself. */
+  margin: -33px -22px 0;
+  padding: 33px 22px;
   border-bottom: 1px solid var(--hairline);
 }
 
@@ -1401,6 +1404,12 @@ input[type='range']:active::-moz-range-thumb {
   /* Tighten vertical padding on the scroll area (see desktop note: padding lives on the
      inner rows, not .controls). */
   .controls-scroll {
+    padding: 27px 18px;
+  }
+
+  /* Match the hero's edge-bleed margins/padding to the tighter mobile scroll padding. */
+  .hero {
+    margin: -27px -18px 0;
     padding: 27px 18px;
   }
 
