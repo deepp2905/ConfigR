@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK, QR_STYLES } from '../state/store'
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
-import { StyleTile } from './StyleTile'
 import { NoQrModal } from './NoQrModal'
 import { isValidUrl } from '../lib/url'
 
@@ -116,15 +115,16 @@ export function Controls() {
           <span className="section-label">Style</span>
         </div>
 
-        <div className="style-grid">
+        <div className="segmented" role="tablist" aria-label="Style">
           {SHADERS.map((s) => (
             <button
               key={s.id}
-              className={`style-tile ${s.id === state.shaderId ? 'is-active' : ''}`}
+              role="tab"
+              aria-selected={s.id === state.shaderId}
+              className={s.id === state.shaderId ? 'is-active' : ''}
               onClick={() => dispatch({ type: 'SET_SHADER', shaderId: s.id })}
             >
-              <StyleTile def={s} />
-              <span className="style-name">{s.label}</span>
+              {s.label}
             </button>
           ))}
         </div>
