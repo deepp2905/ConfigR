@@ -62,8 +62,11 @@ export function Controls() {
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showNoQr, setShowNoQr] = useState(false)
-  const [fineTune, setFineTune] = useState(false)
-  const [qrOpen, setQrOpen] = useState(false)
+  // Accordion: only one collapsible section (Fine-tune / QR) is open at a time.
+  const [openSection, setOpenSection] = useState<'finetune' | 'qr' | null>(null)
+  const fineTune = openSection === 'finetune'
+  const qrOpen = openSection === 'qr'
+  const toggleSection = (s: 'finetune' | 'qr') => setOpenSection((cur) => (cur === s ? null : s))
 
   // The 3 most important fine-tune sliders: the top per-shader param, plus Scale and Seed.
   const scaleParam = def.params.find((p) => p.key === 'scale')
@@ -156,7 +159,7 @@ export function Controls() {
         <button
           className="dropdown-head"
           aria-expanded={fineTune}
-          onClick={() => setFineTune((v) => !v)}
+          onClick={() => toggleSection('finetune')}
         >
           <span className="section-label">Fine-tune</span>
           <span className={`chevron ${fineTune ? 'is-open' : ''}`} aria-hidden>
@@ -203,7 +206,7 @@ export function Controls() {
         <button
           className="dropdown-head"
           aria-expanded={qrOpen}
-          onClick={() => setQrOpen((v) => !v)}
+          onClick={() => toggleSection('qr')}
         >
           <span className="section-label">QR code</span>
           <span className={`chevron ${qrOpen ? 'is-open' : ''}`} aria-hidden>
