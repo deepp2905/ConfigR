@@ -169,12 +169,36 @@ summary:focus-visible,
   gap: 16px;
 }
 
-.phone-frame {
+/* Sizing wrapper. Holds the device aspect ratio and hosts the ambient glow,
+   which is allowed to bleed beyond the frame (so it is NOT clipped here). */
+.phone-stage {
   position: relative;
   height: clamp(360px, 60vh, 660px);
-  border-radius: 34px;
   /* Smoothly resize when switching between device presets. */
-  transition: width 0.2s ease-out, height 0.2s ease-out, aspect-ratio 0.2s ease-out;
+  transition: height 0.2s ease-out, aspect-ratio 0.2s ease-out;
+}
+
+/* The same gradient as the screen, scaled up, faint and heavily blurred —
+   a slow-moving glow that sits directly behind the mockup. */
+.phone-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 130%;
+  height: 118%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  opacity: 0.35;
+  filter: blur(60px) saturate(130%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.phone-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 34px;
   overflow: hidden;
   /* Confine QR mix-blend-mode to the frame so it blends with the shader, not the page. */
   isolation: isolate;
@@ -1146,7 +1170,7 @@ input[type='range']::-moz-range-thumb {
     overflow-y: auto;
   }
 
-  .phone-frame {
+  .phone-stage {
     height: clamp(520px, 80vh, 800px);
   }
 }
@@ -1168,7 +1192,7 @@ input[type='range']::-moz-range-thumb {
   }
 
   /* Smaller mockup so the controls remain reachable without much scrolling. */
-  .phone-frame {
+  .phone-stage {
     height: clamp(300px, 52vh, 520px);
   }
 

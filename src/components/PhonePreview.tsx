@@ -58,10 +58,18 @@ export function PhonePreview() {
       </div>
 
       <div
-        className="phone-frame"
-        ref={frameRef}
+        className="phone-stage"
         style={{ aspectRatio: `${device.width} / ${device.height}` }}
       >
+        {/* Subtle ambient glow: the same gradient, slowly moving, heavily blurred and faint. */}
+        <Shader
+          key={`glow-${def.id}`}
+          {...shaderProps}
+          speed={0.6}
+          aria-hidden
+          className="phone-glow"
+        />
+        <div className="phone-frame" ref={frameRef}>
         <Shader
           key={def.id}
           {...shaderProps}
@@ -90,6 +98,7 @@ export function PhonePreview() {
             mixBlendMode: state.qr.blendMode === 'overlay' ? 'overlay' : undefined,
           }}
         />
+        </div>
       </div>
 
       <button
