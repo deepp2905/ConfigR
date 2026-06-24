@@ -1173,3 +1173,35 @@ input[type='range']::-moz-range-thumb {
     height: clamp(520px, 80vh, 800px);
   }
 }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  .app {
+    padding: 16px 14px;
+    /* Don't force vertical centering on phones — let content flow and scroll. */
+    justify-content: flex-start;
+  }
+
+  .app-header {
+    padding: 4px 2px 16px;
+  }
+
+  .app-main {
+    gap: 20px;
+  }
+
+  /* Smaller mockup so the controls remain reachable without much scrolling. */
+  .phone-frame {
+    height: clamp(300px, 52vh, 520px);
+  }
+
+  .controls {
+    padding: 18px;
+  }
+
+  /* The floating pill spans the screen width with a comfortable inset. */
+  .finetune-pill {
+    width: calc(100vw - 28px);
+    bottom: 14px;
+  }
+}
