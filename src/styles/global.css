@@ -624,9 +624,44 @@ html.qr-cur-nesw * {
 .hero {
   /* Pull out to the panel edges so the divider spans full width, and cancel the scroll
      container's 33px top padding so the hero keeps equal 33px top/bottom padding itself. */
+  position: relative;
   margin: -33px -22px 0;
   padding: 33px 22px;
   border-bottom: 1px solid var(--hairline);
+  /* Clip the ambient glow to the hero block. */
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Ambient shader glow behind the link field — the active gradient, blurred, so the
+   panel's primary control reads as the focal point and reflects the live background. */
+.hero-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150%;
+  height: 220%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  opacity: 0.55;
+  filter: blur(48px) saturate(135%);
+  pointer-events: none;
+}
+
+/* A faint scrim keeps the input/label legible over the glow. */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: color-mix(in srgb, var(--panel) 35%, transparent);
+  pointer-events: none;
+}
+
+.hero-label,
+.hero-input {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-label {

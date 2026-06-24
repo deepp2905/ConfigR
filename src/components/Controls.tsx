@@ -3,6 +3,7 @@ import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK, QR_STYLES } from '../
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
 import { StyleTile } from './StyleTile'
+import { ShaderGlow } from './ShaderGlow'
 import { NoQrModal } from './NoQrModal'
 import { Chevron } from './Chevron'
 import { isValidUrl } from '../lib/url'
@@ -114,8 +115,10 @@ export function Controls() {
     <div className="controls">
       {/* Scrollable content; the Download bar stays pinned at the bottom. */}
       <div className="controls-scroll">
-      {/* ① Your link — the whole point */}
+      {/* ① Your link — the whole point. An ambient shader glow behind it ties it to the
+          live background and makes it the clear focal point of the panel. */}
       <div className="hero">
+        <ShaderGlow className="hero-glow" />
         <label className="hero-label" htmlFor="link-input">
           Your link
         </label>
