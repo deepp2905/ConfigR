@@ -352,7 +352,10 @@ html.qr-cur-nesw * {
   align-items: center;
   gap: 7px;
   border: 1px solid var(--hairline);
-  background: var(--panel);
+  /* Frosted glass, matching the screensize pill / dropdown theme. */
+  background: color-mix(in srgb, var(--panel) 70%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
   color: var(--text-2);
   border-radius: 999px;
   padding: 9px 18px;
@@ -429,7 +432,10 @@ html.qr-cur-nesw * {
 
 .ui-select.pill .ui-select-trigger {
   width: 250px;
-  background: var(--panel);
+  /* Frosted glass to match the randomize button / dropdown-pill theme. */
+  background: color-mix(in srgb, var(--panel) 70%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
   color: var(--text-2);
   border-radius: 999px;
   padding: 7px 16px;
@@ -438,6 +444,13 @@ html.qr-cur-nesw * {
 
 .ui-select.pill .ui-select-trigger:hover {
   color: var(--text);
+}
+
+/* The pill's open menu shares the same frosted-glass treatment. */
+.ui-select.pill .ui-select-menu {
+  background: color-mix(in srgb, var(--menu) 78%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
 }
 
 .ui-select-menu {
