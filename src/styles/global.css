@@ -962,9 +962,14 @@ input[type='range']::-moz-range-thumb {
   grid-template-rows: 1fr;
 }
 
+/* overflow:hidden is needed so the grid-rows collapse animation clips the content.
+   That clip also crops the active rings on swatches/segmented buttons and the slider
+   thumbs, so add a small inset on all sides to keep them inside the clip box. */
 .dropdown-body > .dropdown-inner {
   overflow: hidden;
   min-height: 0;
+  padding: 0 6px;
+  margin: 0 -6px;
 }
 
 /* Space out stacked sliders in the Fine-tune dropdown (the QR inner sets its own gap). */
@@ -974,10 +979,11 @@ input[type='range']::-moz-range-thumb {
   gap: 22px;
 }
 
-/* The header's bottom padding already provides the gap to the revealed content;
-   add a little extra breathing room below the content when open. */
+/* The header's bottom padding provides the gap above; pad the top/bottom of the clip
+   box when open so the first row's ring and the last slider's thumb aren't cropped. */
 .dropdown-body.is-open > .dropdown-inner {
-  padding-bottom: 4px;
+  padding-top: 6px;
+  padding-bottom: 10px;
 }
 
 /* Export (pinned at the very bottom of the control panel, accent) */
