@@ -155,7 +155,7 @@ export function Controls() {
       </div>
 
       {/* Fine-tune — collapsible dropdown of the 3 key sliders */}
-      <div className="section">
+      <div className="section is-collapsible">
         <button
           className="dropdown-head"
           aria-expanded={fineTune}
@@ -202,7 +202,7 @@ export function Controls() {
       </div>
 
       {/* QR — collapsible dropdown */}
-      <div className="section">
+      <div className="section is-collapsible">
         <button
           className="dropdown-head"
           aria-expanded={qrOpen}

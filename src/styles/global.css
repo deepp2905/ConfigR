@@ -518,6 +518,13 @@ html.qr-cur-nesw * {
   padding-top: 0;
 }
 
+/* Collapsible sections move their vertical padding onto the header button so the
+   whole padded strip (not just the label row) is part of the clickable hit area. */
+.section.is-collapsible {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .section-head {
   display: flex;
   align-items: center;
@@ -915,7 +922,7 @@ input[type='range']::-moz-range-thumb {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0;
+  padding: 30px 0;
   border: none;
   background: none;
   cursor: pointer;
@@ -947,9 +954,10 @@ input[type='range']::-moz-range-thumb {
   min-height: 0;
 }
 
-/* Inner content gets its top padding only when open, so collapsed height is truly 0. */
+/* The header's bottom padding already provides the gap to the revealed content;
+   add a little extra breathing room below the content when open. */
 .dropdown-body.is-open > .dropdown-inner {
-  padding-top: 27px;
+  padding-bottom: 4px;
 }
 
 /* Export (pinned at the very bottom of the control panel, accent) */
