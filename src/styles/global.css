@@ -942,12 +942,12 @@ input[type='range']::-moz-range-thumb {
   cursor: pointer;
 }
 
-.dropdown-head:disabled {
-  cursor: not-allowed;
+.dropdown-head.is-disabled {
+  cursor: default;
 }
 
 /* Section label stays muted while the section is disabled (no valid URL yet). */
-.dropdown-head:disabled .section-label {
+.dropdown-head.is-disabled .section-label {
   color: var(--text-3);
 }
 
@@ -962,6 +962,18 @@ input[type='range']::-moz-range-thumb {
   border-radius: 999px;
   padding: 4px 10px;
   white-space: nowrap;
+}
+
+/* Clickable variant — focuses the Your Link field. */
+.chip-action {
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.chip-action:hover {
+  color: var(--text);
+  border-color: var(--hairline-strong);
+  background: var(--input-hover);
 }
 
 .dropdown-head .chevron {
