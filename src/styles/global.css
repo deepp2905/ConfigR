@@ -510,17 +510,20 @@ html.qr-cur-nesw * {
   background: var(--panel);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
-  /* Horizontal padding lives on the inner rows (.controls-scroll/.export-bar) so the
-     scroll box has the inset itself — otherwise overflow-y:auto clips the active
-     ring (box-shadow) on the left-hand tiles/swatches. */
-  padding: 33px 0 25px;
+  /* All padding lives on the inner rows (.controls-scroll/.export-bar): horizontal so the
+     scroll box owns the inset (overflow-y:auto would otherwise clip the active ring on the
+     left-hand tiles/swatches), and vertical so the scrollbar spans the full panel height
+     rather than being inset by the panel's own top/bottom padding. */
+  padding: 0;
 }
 
-/* Scrollable content area; on desktop it grows to fill, pushing Download to the bottom. */
+/* Scrollable content area; on desktop it grows to fill, pushing Download to the bottom.
+   The 33/25px top/bottom padding keeps the content inset while the scroll track itself
+   runs edge-to-edge of the block (everything above the Download bar). */
 .controls-scroll {
   display: flex;
   flex-direction: column;
-  padding: 0 22px;
+  padding: 33px 22px 25px;
 }
 
 .section {
@@ -1309,12 +1312,12 @@ input[type='range']::-moz-range-thumb {
     height: clamp(300px, 52vh, 520px);
   }
 
-  /* Keep horizontal padding on the inner rows (see desktop note); tighten only vertically. */
-  .controls {
-    padding: 27px 0;
+  /* Tighten vertical padding on the scroll area (see desktop note: padding lives on the
+     inner rows, not .controls). */
+  .controls-scroll {
+    padding: 27px 18px;
   }
 
-  .controls-scroll,
   .export-bar {
     padding-left: 18px;
     padding-right: 18px;
