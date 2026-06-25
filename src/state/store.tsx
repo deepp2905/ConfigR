@@ -68,7 +68,7 @@ export const initialState: ConfigState = {
   seed: 2500,
   qrStyle: 'duotone',
   qr: {
-    scale: 0.36,
+    scale: 0.396,
     posX: 0.5,
     posY: 0.5,
     rounded: true,
