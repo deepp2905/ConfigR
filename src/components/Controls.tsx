@@ -259,7 +259,7 @@ export function Controls() {
       </div>
 
       {/* Fine-tune — collapsible dropdown of the 3 key sliders */}
-      <div className="section is-collapsible">
+      <div className="section is-collapsible keep-divider">
         <button
           className="dropdown-head"
           aria-expanded={fineTune}

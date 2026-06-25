@@ -600,8 +600,9 @@ html.qr-cur-nesw * {
 }
 
 /* While a collapsible section is open, fade out its bottom divider so the expanded
-   content reads as one block (0.2s ease-out, in step with the panel opening). */
-.section.is-collapsible:has(.dropdown-body.is-open) {
+   content reads as one block (0.2s ease-out, in step with the panel opening).
+   Excludes .keep-divider sections (Fine-tune), which keep their bottom line break. */
+.section.is-collapsible:not(.keep-divider):has(.dropdown-body.is-open) {
   border-bottom-color: transparent;
 }
 
