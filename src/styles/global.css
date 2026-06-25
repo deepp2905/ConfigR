@@ -770,15 +770,6 @@ html.qr-cur-nesw * {
   border: 1px solid var(--hairline-strong);
 }
 
-/* QR color dots sit at the top-left of the (overflow-clipped) QR dropdown, so a tooltip
-   centered above/over the dot gets cut off on the top and left. Show it below the dot and
-   left-anchored so it grows rightward, staying inside the clipped container. */
-.qr-fields .swatch[data-label]::after {
-  top: calc(100% + 9px);
-  bottom: auto;
-  left: 0;
-  transform: none;
-}
 
 /* Toggle switch */
 .switch-row {
@@ -1114,6 +1105,8 @@ input[type='range']:active::-moz-range-thumb {
   padding-top: 6px;
   padding-bottom: 30px;
   opacity: 1;
+  /* Once open, let tooltips/rings escape the box instead of being clipped. */
+  overflow: visible;
 }
 
 /* Export (pinned at the very bottom of the control panel, accent) */
