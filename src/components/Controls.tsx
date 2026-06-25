@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK, QR_STYLES } from '../state/store'
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
@@ -76,13 +76,6 @@ export function Controls() {
     if (s === 'qr' && !urlValid) return
     setOpenSection((cur) => (cur === s ? null : s))
   }
-
-  // Open the QR dropdown automatically the moment a valid link is detected.
-  const wasValidRef = useRef(false)
-  useEffect(() => {
-    if (urlValid && !wasValidRef.current) setOpenSection('qr')
-    wasValidRef.current = urlValid
-  }, [urlValid])
 
   // The 3 most important fine-tune sliders: the top per-shader param, plus Scale and Seed.
   const scaleParam = def.params.find((p) => p.key === 'scale')
