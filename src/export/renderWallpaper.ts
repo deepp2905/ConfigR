@@ -161,7 +161,7 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
     }
 
     // Config wordmark watermark — half width, bottom-center, 16px (scaled) gap, Overlay blend.
-    try {
+    if (state.showConfigMark) try {
       const logo = await loadImage('/config.svg')
       const frameW = (document.querySelector('.phone-frame') as HTMLElement | null)?.clientWidth
       const logoW = Math.round(w * 0.5)

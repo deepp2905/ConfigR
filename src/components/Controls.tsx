@@ -312,6 +312,20 @@ export function Controls() {
         </div>
       </div>
 
+      {/* Show / hide the Config wordmark watermark */}
+      <div className="section switch-row">
+        <span>Show Config logo</span>
+        <button
+          role="switch"
+          aria-checked={state.showConfigMark}
+          aria-label="Show Config logo on the wallpaper"
+          className={`switch ${state.showConfigMark ? 'on' : ''}`}
+          onClick={() => dispatch({ type: 'SET_SHOW_CONFIG_MARK', value: !state.showConfigMark })}
+        >
+          <span className="knob" />
+        </button>
+      </div>
+
       {error && <p className="error">{error}</p>}
       </div>
 

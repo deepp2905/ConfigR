@@ -37,6 +37,8 @@ export interface ConfigState {
   /** Immersive QR treatment. */
   qrStyle: QrStyle
   qr: QrConfig
+  /** Whether the Config wordmark watermark is shown on the wallpaper. */
+  showConfigMark: boolean
 }
 
 export const QR_WHITE = '#f6f6fb'
@@ -76,6 +78,7 @@ export const initialState: ConfigState = {
     opacity: 1,
     blendMode: 'overlay',
   },
+  showConfigMark: true,
 }
 
 type Action =
@@ -87,6 +90,7 @@ type Action =
   | { type: 'SET_SEED'; value: number }
   | { type: 'SET_QR_STYLE'; value: QrStyle }
   | { type: 'SET_QR'; patch: Partial<QrConfig> }
+  | { type: 'SET_SHOW_CONFIG_MARK'; value: boolean }
   | { type: 'RANDOMIZE_BACKGROUND' }
 
 function randomizeShader(def: ShaderDef): { paletteId: string; params: Record<string, number> } {
@@ -119,6 +123,8 @@ function reducer(state: ConfigState, action: Action): ConfigState {
       return { ...state, qrStyle: action.value }
     case 'SET_QR':
       return { ...state, qr: { ...state.qr, ...action.patch } }
+    case 'SET_SHOW_CONFIG_MARK':
+      return { ...state, showConfigMark: action.value }
     case 'RANDOMIZE_BACKGROUND': {
       const def = pick(SHADERS)
       const { paletteId, params } = randomizeShader(def)
