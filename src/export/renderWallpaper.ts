@@ -160,13 +160,13 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
       ctx.restore()
     }
 
-    // Config wordmark watermark — half width, bottom-center, 16px (scaled) gap, Overlay blend.
+    // Config wordmark watermark — 37.5% width, bottom-center, 32px (scaled) gap, Overlay blend.
     if (state.showConfigMark) try {
       const logo = await loadImage('/config.svg')
       const frameW = (document.querySelector('.phone-frame') as HTMLElement | null)?.clientWidth
-      const logoW = Math.round(w * 0.5)
+      const logoW = Math.round(w * 0.375)
       const logoH = Math.round(logoW * (197 / 870))
-      const gap = Math.round(16 * (frameW ? w / frameW : 3))
+      const gap = Math.round(32 * (frameW ? w / frameW : 3))
       const lx = Math.round((w - logoW) / 2)
       const ly = h - logoH - gap
       // Recolor the glyph white, preserving its alpha.

@@ -269,9 +269,9 @@ html.qr-cur-nesw * {
    Centered via left:25% (not transform) so mix-blend-mode blends with the shader. */
 .config-mark {
   position: absolute;
-  left: 25%;
-  bottom: 16px;
-  width: 50%;
+  left: 31.25%;
+  bottom: 32px;
+  width: 37.5%;
   aspect-ratio: 870 / 197;
   background: #fff;
   -webkit-mask: url(/config.svg) center / contain no-repeat;
