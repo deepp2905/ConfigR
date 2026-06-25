@@ -770,11 +770,14 @@ html.qr-cur-nesw * {
   border: 1px solid var(--hairline-strong);
 }
 
-/* QR color dots sit at the top of the (overflow-clipped) QR dropdown, so their tooltips
-   would be cut off above. Flip them to show below the dot, where there's room. */
+/* QR color dots sit at the top-left of the (overflow-clipped) QR dropdown, so a tooltip
+   centered above/over the dot gets cut off on the top and left. Show it below the dot and
+   left-anchored so it grows rightward, staying inside the clipped container. */
 .qr-fields .swatch[data-label]::after {
-  bottom: auto;
   top: calc(100% + 9px);
+  bottom: auto;
+  left: 0;
+  transform: none;
 }
 
 /* Toggle switch */
