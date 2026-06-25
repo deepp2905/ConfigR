@@ -74,8 +74,18 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
   const shaderProps = buildShaderProps(def, palette, state.params)
   const { width: w, height: h } = device
 
+  // The shaders size their pattern relative to the render resolution, so rendering at the
+  // full native device resolution makes the pattern look smaller / "zoomed out" compared to
+  // the small on-screen preview. Render the export shader at the *preview frame's* pixel size
+  // (same dimensions the user sees) so the framing matches, then upscale to native when
+  // compositing. The QR is still drawn at full native size, so it stays crisp.
+  const previewFrame = document.querySelector('.phone-frame') as HTMLElement | null
+  const previewW = previewFrame?.clientWidth ?? 390
+  const renderW = Math.max(1, Math.round(previewW))
+  const renderH = Math.max(1, Math.round((renderW * h) / w))
+
   const container = document.createElement('div')
-  container.style.cssText = `position:fixed;left:-100000px;top:0;width:${w}px;height:${h}px;pointer-events:none;`
+  container.style.cssText = `position:fixed;left:-100000px;top:0;width:${renderW}px;height:${renderH}px;pointer-events:none;`
   document.body.appendChild(container)
   const root = createRoot(container)
 
@@ -85,8 +95,6 @@ export async function exportWallpaper(state: ConfigState): Promise<void> {
         ...shaderProps,
         speed: 0,
         frame: state.seed,
-        minPixelRatio: 1,
-        maxPixelCount: w * h + 4096,
         webGlContextAttributes: { preserveDrawingBuffer: true },
         style: { width: '100%', height: '100%' },
       }),
