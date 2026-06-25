@@ -66,7 +66,7 @@ export const initialState: ConfigState = {
   paletteId: DEFAULT_PALETTE_ID,
   params: defaultParams(initialShader),
   seed: 2500,
-  qrStyle: 'dynamic',
+  qrStyle: 'duotone',
   qr: {
     scale: 0.36,
     posX: 0.5,
@@ -74,7 +74,7 @@ export const initialState: ConfigState = {
     rounded: true,
     color: QR_WHITE,
     opacity: 1,
-    blendMode: 'normal',
+    blendMode: 'overlay',
   },
 }
 
