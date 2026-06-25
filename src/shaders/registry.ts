@@ -119,7 +119,7 @@ export const SHADERS: ShaderDef[] = [
   },
 ]
 
-export const DEFAULT_SHADER_ID = 'mesh-gradient'
+export const DEFAULT_SHADER_ID = 'grain-gradient'
 
 export function getShader(id: string): ShaderDef {
   return SHADERS.find((s) => s.id === id) ?? SHADERS[0]
