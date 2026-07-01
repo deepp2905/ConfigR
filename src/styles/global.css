@@ -16,7 +16,7 @@
   --danger: #ff6b6b;
   --radius: 14px;
   --radius-sm: 10px;
-  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
   font-optical-sizing: auto;
   /* Slight negative tracking reads more modern at UI sizes. */
   letter-spacing: -0.011em;
