@@ -243,10 +243,11 @@ summary:focus-visible,
   /* Confine QR mix-blend-mode to the frame so it blends with the shader, not the page. */
   isolation: isolate;
   background: #050507;
-  /* Border sits 6px off the frame edge: first ring is a black gap (page color), then a
-     thicker, mildly translucent gray border. */
+  /* Border sits 6px off the frame edge: first ring is a translucent black gap (so the glow
+     shows faintly through it, reading like glass), then a thicker, mildly translucent gray
+     border. */
   box-shadow:
-    0 0 0 6px var(--ground),
+    0 0 0 6px rgba(5, 5, 7, 0.45),
     0 0 0 8px rgba(180, 184, 196, 0.3),
     0 24px 60px -24px rgba(0, 0, 0, 0.8);
 }
