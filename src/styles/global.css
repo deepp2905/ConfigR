@@ -508,13 +508,15 @@ html.qr-cur-nesw * {
   font-size: 12.5px;
   font-weight: 600;
   color: var(--text);
-  background: rgba(255, 255, 255, 0.1);
+  /* Transparent so it reads as the same surface as the field beside it; hover darkens
+     rather than lightens, keeping the pill's glass from brightening under the cursor. */
+  background: transparent;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .qr-url-action:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.28);
   color: #fff;
 }
 
