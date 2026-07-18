@@ -18,6 +18,10 @@ export function PhonePreview() {
   const [showUrlPill, setShowUrlPill] = useState(true)
   // Faded out mid-drag/resize so it never sits under the cursor.
   const [qrBusy, setQrBusy] = useState(false)
+  // The pill's field contents and edit/saved mode live here, not in the pill, so dismissing
+  // and reopening it restores what was typed instead of resetting to a blank field.
+  const [urlDraft, setUrlDraft] = useState('')
+  const [urlEditing, setUrlEditing] = useState(true)
   const [dieFace, setDieFace] = useState(5)
 
   const device = getDevice(state.deviceId)
@@ -112,6 +116,10 @@ export function PhonePreview() {
             anchorY={state.qr.posY - (state.qr.scale * (device.width / device.height)) / 2}
             anchorYBottom={state.qr.posY + (state.qr.scale * (device.width / device.height)) / 2}
             hidden={qrBusy}
+            draft={urlDraft}
+            onDraftChange={setUrlDraft}
+            editing={urlEditing}
+            onEditingChange={setUrlEditing}
             onChange={(url) => dispatch({ type: 'SET_URL', url })}
           />
         )}

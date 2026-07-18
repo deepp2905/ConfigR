@@ -61,12 +61,16 @@ function randomSeed(): number {
 
 const initialShader = getShader(DEFAULT_SHADER_ID)
 
-/** Shown in the QR before the user supplies their own link, and as the editor's placeholder. */
-export const DEFAULT_URL = 'example.com'
+/** Encoded by the QR on first load, before the user has supplied a link of their own. */
+export const DEFAULT_URL = 'deeepatel.com'
+
+/** Greyed hint in the empty link field. Deliberately not DEFAULT_URL — it's an example,
+    not a real destination. */
+export const URL_PLACEHOLDER = 'example.com'
 
 export const initialState: ConfigState = {
-  /** Placeholder link so a QR is on screen immediately; the editor opens empty over it,
-      showing this as its placeholder, so typing replaces it without any clearing step. */
+  /** A real link so a QR is on screen immediately; the editor opens empty over it, so the
+      first keystroke replaces it without any clearing step. */
   url: DEFAULT_URL,
   deviceId: DEFAULT_DEVICE_ID,
   shaderId: DEFAULT_SHADER_ID,

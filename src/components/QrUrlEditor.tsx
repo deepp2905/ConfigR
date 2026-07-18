@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { GlobeIcon } from './GlobeIcon'
 import { isValidUrl } from '../lib/url'
-import { DEFAULT_URL } from '../state/store'
+import { URL_PLACEHOLDER } from '../state/store'
 
 interface QrUrlEditorProps {
   /** Horizontal center of the QR, 0–1 of the frame width — the pill centers on this. */
@@ -12,6 +12,13 @@ interface QrUrlEditorProps {
   anchorYBottom: number
   /** Dim + disable pointer events while the QR is being dragged or resized. */
   hidden: boolean
+  /** Field contents. Owned by the parent so it survives the pill being dismissed. */
+  draft: string
+  onDraftChange: (draft: string) => void
+  /** Editing (field + Save) vs. saved (read-only value + Edit). Also parent-owned, so
+      reopening a saved link returns to the saved state rather than restarting the edit. */
+  editing: boolean
+  onEditingChange: (editing: boolean) => void
   /** Live preview: fires on every keystroke that parses as a URL. */
   onChange: (url: string) => void
 }
@@ -27,6 +34,10 @@ export function QrUrlEditor({
   anchorY,
   anchorYBottom,
   hidden,
+  draft,
+  onDraftChange,
+  editing,
+  onEditingChange,
   onChange,
 }: QrUrlEditorProps) {
   // Flip below the QR when it's too close to the top of the frame for the pill to fit.
@@ -36,9 +47,6 @@ export function QrUrlEditor({
   // Horizontal nudge (px) that keeps the pill inside the phone frame when the QR sits near
   // an edge — without it the pill is centered on the QR and its ends clip off the screen.
   const [shiftX, setShiftX] = useState(0)
-  // Starts empty over the placeholder QR so typing needs no clearing step.
-  const [draft, setDraft] = useState('')
-  const [editing, setEditing] = useState(true)
   // Set on a failed save; drives the shake + message, cleared as soon as typing resumes.
   const [rejected, setRejected] = useState(false)
 
@@ -71,7 +79,7 @@ export function QrUrlEditor({
       return
     }
     setRejected(false)
-    setEditing(false)
+    onEditingChange(false)
   }
 
   useEffect(() => {
@@ -115,11 +123,11 @@ export function QrUrlEditor({
             spellCheck={false}
             autoComplete="off"
             aria-label="QR code link"
-            placeholder={DEFAULT_URL}
+            placeholder={URL_PLACEHOLDER}
             value={draft}
             onChange={(e) => {
               const next = e.target.value
-              setDraft(next)
+              onDraftChange(next)
               setRejected(false)
               // Live preview; an unparseable draft leaves the QR on its last good value.
               if (isValidUrl(next)) onChange(next)
@@ -132,7 +140,7 @@ export function QrUrlEditor({
         <button
           type="button"
           className="qr-url-action"
-          onClick={() => (editing ? save() : setEditing(true))}
+          onClick={() => (editing ? save() : onEditingChange(true))}
         >
           {editing ? 'Save' : 'Edit'}
         </button>
