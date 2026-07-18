@@ -542,7 +542,8 @@ html.qr-cur-nesw * {
   40%, 60% { transform: translate(calc(-50% + 6px), 14px); }
 }
 
-/* Sits above the pill, in its own dark translucent chip so it stays legible on any shader.
+/* Sits on whichever side of the pill faces away from the QR, so it never covers the code:
+   above by default, below when the pill itself has flipped below the QR.
    Left-aligned so its text starts on the same x as the input's: the pill's 14px left
    padding + the 13px globe + the 9px gap, less this chip's own 10px inset. */
 .qr-url-error {
@@ -559,6 +560,13 @@ html.qr-cur-nesw * {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   animation: qr-url-error-in 0.16s ease-out;
+}
+
+/* Pill flipped below the QR → the chip flips too, staying on the far side. */
+.qr-url-editor.is-below .qr-url-error {
+  bottom: auto;
+  top: calc(100% + 7px);
+  animation-name: qr-url-error-in-below;
 }
 
 @keyframes qr-url-error-in {
@@ -1574,5 +1582,16 @@ input[type='range']:active::-moz-range-thumb {
   .export-bar {
     padding-left: 18px;
     padding-right: 18px;
+  }
+}
+
+@keyframes qr-url-error-in-below {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
