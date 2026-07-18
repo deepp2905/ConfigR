@@ -92,6 +92,9 @@ export function PhonePreview() {
           {...shaderProps}
           speed={0}
           frame={state.seed}
+          /* Preserved so the QR's auto fill can sample the pixels beneath it; without this
+             the buffer is cleared after each paint and reads back empty. */
+          webGlContextAttributes={{ preserveDrawingBuffer: true }}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
         />
         {normalizedUrl && (
