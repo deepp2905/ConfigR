@@ -123,12 +123,20 @@ summary:focus-visible,
 
   /* Entrances stay, minus the scale. */
   .qr-url-editor:not(.is-rejected),
-  .qr-url-error {
+  .qr-url-error,
+  .ui-select-menu {
     animation-name: qr-reduced-fade;
   }
 
   .modal {
     transform: none;
+  }
+
+  /* Keep the tooltip's centering; drop only its scale. */
+  .swatch[data-label]::after,
+  .swatch[data-label]:hover::after,
+  .swatch[data-label]:focus-visible::after {
+    transform: translateX(-50%);
   }
 }
 
@@ -718,7 +726,7 @@ html.qr-cur-nesw * {
 .ui-select-caret {
   display: inline-flex;
   color: var(--text-3);
-  transition: transform 0.15s ease;
+  transition: transform 0.15s var(--ease-in-out);
 }
 
 .ui-select.is-open .ui-select-caret {
@@ -775,6 +783,21 @@ html.qr-cur-nesw * {
   border: 1px solid var(--hairline-strong);
   border-radius: var(--radius-sm);
   box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.75);
+  /* Grows from the trigger it hangs off, not from its own middle. */
+  transform-origin: top center;
+  animation: ui-select-menu-in 0.15s var(--ease-out);
+}
+
+/* Never from scale(0) — the menu has a shape before it finishes arriving. */
+@keyframes ui-select-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .ui-select.inline .ui-select-menu {
@@ -976,7 +999,11 @@ html.qr-cur-nesw * {
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.12s ease;
+  /* Grows from the swatch it labels (it sits above, so the origin is its bottom edge).
+     translateX(-50%) is the centering, so the scale has to compose with it. */
+  transform: translateX(-50%) scale(0.97);
+  transform-origin: bottom center;
+  transition: opacity 0.12s ease, transform 0.12s var(--ease-out);
   box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.6);
   z-index: 40;
 }
@@ -984,10 +1011,16 @@ html.qr-cur-nesw * {
 .swatch[data-label]:hover::after,
 .swatch[data-label]:focus-visible::after {
   opacity: 1;
+  transform: translateX(-50%) scale(1);
 }
 
 /* Once the cursor is within the swatch group, switching between swatches is instant —
-   only the first show and the final exit animate. */
+   only the final exit animates.
+   Note: this also catches the group's *first* tooltip, since entering the group and
+   entering a swatch happen in the same instant — so tooltips here never animate in,
+   they just appear. Distinguishing "first show" from "swap" needs JS state (a
+   data-instant attribute set on the second and later shows); pure CSS can't express
+   it. The instant swap is the more valuable half, so it stays as-is. */
 .swatches:hover .swatch[data-label]::after {
   transition-duration: 0s;
 }
@@ -1284,10 +1317,11 @@ input[type='range']:active::-moz-range-thumb {
   background: var(--input-hover);
 }
 
+/* Rotation is movement on screen, not an entrance, so it accelerates and decelerates. */
 .dropdown-head .chevron {
   display: inline-flex;
   color: var(--text-3);
-  transition: transform 0.2s ease-out;
+  transition: transform 0.2s var(--ease-in-out);
 }
 
 .dropdown-head .chevron.is-open {
