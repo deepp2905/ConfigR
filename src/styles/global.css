@@ -16,6 +16,10 @@
   --danger: #ff6b6b;
   --radius: 14px;
   --radius-sm: 10px;
+  /* Stronger than the built-in curves, which are too weak to read as intentional.
+     --ease-out for anything entering/exiting, --ease-in-out for on-screen movement. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
   font-optical-sizing: auto;
   /* Slight negative tracking reads more modern at UI sizes. */
@@ -99,12 +103,41 @@ summary:focus-visible,
   outline-offset: 2px;
 }
 
+/* Reduced motion means gentler, not none: opacity and color still carry meaning (what
+   appeared, what changed), so they're kept. Only movement is removed. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    transition-duration: 0.001ms !important;
-    animation-duration: 0.001ms !important;
+    /* Cut movement, keep the fade. */
+    transition-property: opacity, color, background-color, border-color, box-shadow, filter;
+    transition-duration: 0.15s;
+    animation-duration: 0.15s;
+  }
+
+  /* Motion-only keyframes have nothing left to say without movement. */
+  .qr-url-editor.is-rejected,
+  .qr-intro {
+    animation: none;
+  }
+
+  /* Entrances stay, minus the scale. */
+  .qr-url-editor:not(.is-rejected),
+  .qr-url-error {
+    animation-name: qr-reduced-fade;
+  }
+
+  .modal {
+    transform: none;
+  }
+}
+
+@keyframes qr-reduced-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -331,7 +364,7 @@ html.qr-cur-nesw * {
 }
 
 .qr-intro {
-  animation: qr-pop-in 0.2s ease-out;
+  animation: qr-pop-in 0.2s var(--ease-out);
 }
 
 /* Subtle corner handles, centered on the 4px-offset selection outline; shown only when selected. */
@@ -391,7 +424,7 @@ html.qr-cur-nesw * {
 
 /* Intro only when not shaking — both animate transform, so they can't both apply. */
 .qr-url-editor:not(.is-rejected) {
-  animation: qr-url-in 0.16s ease-out;
+  animation: qr-url-in 0.16s var(--ease-out);
 }
 
 @keyframes qr-url-in {
@@ -525,7 +558,7 @@ html.qr-cur-nesw * {
 /* Rejected save: a soft horizontal nudge, plus the message. Deliberately gentle — two
    damped swings rather than a vibration, so it reads as a correction, not an alarm. */
 .qr-url-editor.is-rejected {
-  animation: qr-url-shake 0.3s ease-out;
+  animation: qr-url-shake 0.3s var(--ease-out);
 }
 
 /* Composed with the base translate so the pill keeps its anchored position mid-shake. */
@@ -562,7 +595,7 @@ html.qr-cur-nesw * {
   background: rgba(0, 0, 0, 0.55);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  animation: qr-url-error-in 0.16s ease-out;
+  animation: qr-url-error-in 0.16s var(--ease-out);
 }
 
 /* Pill flipped below the QR → the chip flips too, staying on the far side. */
@@ -906,11 +939,19 @@ html.qr-cur-nesw * {
   border-radius: 7%;
   border: none;
   padding: 0;
-  transition: transform 0.1s ease, box-shadow 0.15s ease;
+  transition: transform 0.16s var(--ease-out), box-shadow 0.15s ease;
 }
 
-.swatch:hover {
-  transform: scale(1.08);
+/* Gated: touch devices fire :hover on tap, which would leave the swatch stuck enlarged. */
+@media (hover: hover) and (pointer: fine) {
+  .swatch:hover {
+    transform: scale(1.08);
+  }
+}
+
+/* Press feedback wins over hover — the swatch dips even from its enlarged state. */
+.swatch:active {
+  transform: scale(0.97);
 }
 
 .swatch.is-active {
@@ -1010,7 +1051,7 @@ html.qr-cur-nesw * {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .mini-btn:hover {
@@ -1156,7 +1197,7 @@ input[type='range']:active::-moz-range-thumb {
   font-weight: 500;
   padding: 8px;
   border-radius: 7px;
-  transition: all 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease;
 }
 
 .segmented button.is-active {
@@ -1335,7 +1376,12 @@ input[type='range']:active::-moz-range-thumb {
   color: var(--ground);
   background: #fff;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.16s var(--ease-out);
+}
+
+/* Not while disabled — a press that does nothing shouldn't answer back. */
+.btn-export:active:not(:disabled) {
+  transform: scale(0.985);
 }
 
 .btn-export:disabled {
@@ -1451,6 +1497,15 @@ input[type='range']:active::-moz-range-thumb {
   background: rgba(0, 0, 0, 0.6);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
+  opacity: 1;
+  transition: opacity 0.2s var(--ease-out);
+}
+
+/* The scrim only fades — no movement behind the dialog. */
+@starting-style {
+  .modal-overlay {
+    opacity: 0;
+  }
 }
 
 .modal {
@@ -1461,6 +1516,18 @@ input[type='range']:active::-moz-range-thumb {
   border-radius: var(--radius);
   padding: 22px;
   box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.8);
+  opacity: 1;
+  /* Scales from center on purpose: a modal isn't anchored to a trigger the way a
+     popover is, so there's no off-center origin to grow from. */
+  transform: scale(1);
+  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+@starting-style {
+  .modal {
+    opacity: 0;
+    transform: scale(0.96);
+  }
 }
 
 .modal-title {
@@ -1490,11 +1557,17 @@ input[type='range']:active::-moz-range-thumb {
   padding: 9px 16px;
   font-size: 14px;
   font-weight: 500;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 0.16s var(--ease-out);
 }
 
-.btn-ghost:hover {
-  background: var(--input-hover);
+.btn-ghost:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-ghost:hover {
+    background: var(--input-hover);
+  }
 }
 
 .btn-solid {
@@ -1505,6 +1578,11 @@ input[type='range']:active::-moz-range-thumb {
   padding: 9px 16px;
   font-size: 14px;
   font-weight: 600;
+  transition: transform 0.16s var(--ease-out);
+}
+
+.btn-solid:active {
+  transform: scale(0.97);
 }
 
 /* ---------- Desktop ---------- */
