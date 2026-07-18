@@ -56,7 +56,6 @@ option,
 .section-label,
 .section-head,
 .qr-field-label,
-.hero-label,
 .brand-name,
 .tagline,
 .preview-meta,
@@ -74,8 +73,7 @@ option,
 }
 
 input,
-textarea,
-.hero-input {
+textarea {
   -webkit-user-select: text;
   user-select: text;
 }
@@ -91,7 +89,6 @@ textarea,
 }
 
 /* Visible keyboard focus for all interactive controls (WCAG 2.4.7). */
-.hero-input:focus-visible,
 .text-input:focus-visible,
 button:focus-visible,
 summary:focus-visible,
@@ -374,6 +371,193 @@ html.qr-cur-nesw * {
   cursor: nwse-resize;
 }
 
+/* ---------- In-place link editor (QrUrlEditor.tsx) ----------
+   Floats just above the selected QR. Anchored at the QR's top-center, then pulled up
+   and back by half its own width so it centers on the code regardless of its size. */
+.qr-url-editor {
+  position: absolute;
+  z-index: 40;
+  transform: translate(-50%, calc(-100% - 14px));
+  padding: 7px 8px 7px 14px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  /* Frosted glass, matching the device pill / randomize button. */
+  background: color-mix(in srgb, var(--menu) 68%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.75);
+}
+
+/* Intro only when not shaking — both animate transform, so they can't both apply. */
+.qr-url-editor:not(.is-rejected) {
+  animation: qr-url-in 0.16s ease-out;
+}
+
+@keyframes qr-url-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 10px)) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 14px)) scale(1);
+  }
+}
+
+/* Flipped below the QR when it sits too near the top of the frame. */
+.qr-url-editor.is-below {
+  transform: translate(-50%, 14px);
+}
+
+.qr-url-editor.is-below:not(.is-rejected) {
+  animation-name: qr-url-in-below;
+}
+
+@keyframes qr-url-in-below {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 14px) scale(1);
+  }
+}
+
+/* Faded out of the way while the QR is being dragged or resized. */
+.qr-url-editor.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+
+.qr-url-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.qr-url-icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-3);
+}
+
+.qr-url-input,
+.qr-url-value {
+  width: 190px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.qr-url-input {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font-family: inherit;
+  caret-color: var(--text);
+  outline: none;
+}
+
+/* Text stays white even while the draft doesn't parse — invalidity is reported on save
+   (shake + message), not by dimming as you type. */
+.qr-url-input::placeholder {
+  color: var(--text-3);
+  font-weight: 400;
+}
+
+/* A translucent black wash rather than the default hard invert: it composites over the
+   already-translucent pill, so the selection reads as a darker patch of the same glass. */
+.qr-url-input::selection {
+  background: rgba(0, 0, 0, 0.38);
+  color: #fff;
+}
+
+.qr-url-input::-moz-selection {
+  background: rgba(0, 0, 0, 0.38);
+  color: #fff;
+}
+
+.qr-url-value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.qr-url-action {
+  flex: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 13px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.qr-url-action:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+/* Rejected save: a short horizontal shake, plus the message below. */
+.qr-url-editor.is-rejected {
+  animation: qr-url-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Composed with the base translate so the pill keeps its anchored position mid-shake. */
+@keyframes qr-url-shake {
+  10%, 90% { transform: translate(calc(-50% - 2px), calc(-100% - 14px)); }
+  20%, 80% { transform: translate(calc(-50% + 4px), calc(-100% - 14px)); }
+  30%, 50%, 70% { transform: translate(calc(-50% - 6px), calc(-100% - 14px)); }
+  40%, 60% { transform: translate(calc(-50% + 6px), calc(-100% - 14px)); }
+}
+
+.qr-url-editor.is-below.is-rejected {
+  animation-name: qr-url-shake-below;
+}
+
+@keyframes qr-url-shake-below {
+  10%, 90% { transform: translate(calc(-50% - 2px), 14px); }
+  20%, 80% { transform: translate(calc(-50% + 4px), 14px); }
+  30%, 50%, 70% { transform: translate(calc(-50% - 6px), 14px); }
+  40%, 60% { transform: translate(calc(-50% + 6px), 14px); }
+}
+
+/* Sits below the pill, in its own dark translucent chip so it stays legible on any shader. */
+.qr-url-error {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(0, 0, 0, 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  animation: qr-url-error-in 0.16s ease-out;
+}
+
+@keyframes qr-url-error-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -3px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 /* Temporary center-snap guides */
 .qr-guide {
   position: absolute;
@@ -620,45 +804,6 @@ html.qr-cur-nesw * {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-3);
-}
-
-/* ① Hero link */
-.hero {
-  padding-bottom: 22px;
-  border-bottom: 1px solid var(--hairline);
-}
-
-.hero-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-2);
-  margin-bottom: 10px;
-}
-
-.hero-input {
-  width: 100%;
-  border: 1px solid var(--hairline);
-  background: var(--input);
-  color: var(--text);
-  border-radius: var(--radius);
-  padding: 16px 16px;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.hero-input::placeholder {
-  color: var(--text-3);
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.hero-input:focus {
-  border-color: var(--text-2);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
 /* ② Style — visual picker */

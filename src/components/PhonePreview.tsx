@@ -5,6 +5,7 @@ import { getShader, getPalette, buildShaderProps } from '../shaders/registry'
 import { normalizeUrl } from '../lib/url'
 import { QrLayer } from './QrLayer'
 import { Select } from './Select'
+import { QrUrlEditor } from './QrUrlEditor'
 import { DiceIcon } from './DiceIcon'
 
 export function PhonePreview() {
@@ -12,6 +13,11 @@ export function PhonePreview() {
   const dispatch = useDispatchConfig()
   const frameRef = useRef<HTMLDivElement | null>(null)
   const [qrSelected, setQrSelected] = useState(false)
+  // The link pill. Open on load (over the placeholder QR) so the first thing on screen
+  // is a focused field asking for the user's link; afterwards, a click on the QR reopens it.
+  const [showUrlPill, setShowUrlPill] = useState(true)
+  // Faded out mid-drag/resize so it never sits under the cursor.
+  const [qrBusy, setQrBusy] = useState(false)
   const [dieFace, setDieFace] = useState(5)
 
   const device = getDevice(state.deviceId)
@@ -31,16 +37,19 @@ export function PhonePreview() {
     wasValidRef.current = valid
   }, [normalizedUrl])
 
-  // While selected, a pointer-down anywhere outside the QR (the whole viewport) deselects it.
+  // A pointer-down anywhere outside the QR and its pill (the whole viewport) dismisses both.
+  // This is the pill's only close path — it deliberately stays open through Save.
   useEffect(() => {
-    if (!qrSelected) return
+    if (!qrSelected && !showUrlPill) return
     const onDown = (e: PointerEvent) => {
       const target = e.target as HTMLElement | null
-      if (!target?.closest?.('.qr-box')) setQrSelected(false)
+      if (target?.closest?.('.qr-box') || target?.closest?.('.qr-url-editor')) return
+      setQrSelected(false)
+      setShowUrlPill(false)
     }
     document.addEventListener('pointerdown', onDown)
     return () => document.removeEventListener('pointerdown', onDown)
-  }, [qrSelected])
+  }, [qrSelected, showUrlPill])
 
   const Shader = def.Component
 
@@ -89,8 +98,21 @@ export function PhonePreview() {
             selected={qrSelected}
             aspect={device.width / device.height}
             frameRef={frameRef}
-            onSelect={() => setQrSelected(true)}
+            onSelect={() => {
+              setQrSelected(true)
+              setShowUrlPill(true)
+            }}
+            onDragStateChange={setQrBusy}
             onChange={(patch) => dispatch({ type: 'SET_QR', patch })}
+          />
+        )}
+        {normalizedUrl && showUrlPill && (
+          <QrUrlEditor
+            anchorX={state.qr.posX}
+            anchorY={state.qr.posY - (state.qr.scale * (device.width / device.height)) / 2}
+            anchorYBottom={state.qr.posY + (state.qr.scale * (device.width / device.height)) / 2}
+            hidden={qrBusy}
+            onChange={(url) => dispatch({ type: 'SET_URL', url })}
           />
         )}
         {state.showConfigMark && (

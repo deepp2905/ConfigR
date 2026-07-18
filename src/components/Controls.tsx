@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useConfig, useDispatchConfig, QR_WHITE, QR_BLACK, QR_STYLES } from '../state/store'
 import { SHADERS, getShader, ALL_PALETTES } from '../shaders/registry'
 import { exportWallpaper } from '../export/renderWallpaper'
@@ -65,7 +65,6 @@ export function Controls() {
   const [showNoQr, setShowNoQr] = useState(false)
   // The QR dropdown is only usable once there's a valid link to encode.
   const urlValid = isValidUrl(state.url)
-  const linkInputRef = useRef<HTMLInputElement | null>(null)
 
   // Accordion: only one collapsible section (Fine-tune / QR) is open at a time.
   const [openSection, setOpenSection] = useState<'finetune' | 'qr' | null>(null)
@@ -107,22 +106,7 @@ export function Controls() {
     <div className="controls">
       {/* Scrollable content; the Download bar stays pinned at the bottom. */}
       <div className="controls-scroll">
-      {/* ① Your link — the whole point */}
-      <div className="hero">
-        <label className="hero-label" htmlFor="link-input">
-          Your link
-        </label>
-        <input
-          id="link-input"
-          ref={linkInputRef}
-          className="hero-input"
-          type="url"
-          inputMode="url"
-          autoFocus
-          value={state.url}
-          onChange={(e) => dispatch({ type: 'SET_URL', url: e.target.value })}
-        />
-      </div>
+      {/* The link is edited in place on the preview (QrUrlEditor), not here. */}
 
       {/* QR — collapsible dropdown (disabled until a valid link exists), kept right
           below the link since it's the most directly link-related control. */}
@@ -139,16 +123,11 @@ export function Controls() {
             </span>
           </button>
         ) : (
-          // No valid URL yet: the label isn't a toggle; the chip jumps to the link field.
+          // No valid URL: the label isn't a toggle, and the link is fixed on the preview
+          // itself, so this is a hint rather than a control.
           <div className="dropdown-head is-disabled" aria-disabled>
             <span className="section-label">QR code</span>
-            <button
-              type="button"
-              className="chip chip-action"
-              onClick={() => linkInputRef.current?.focus()}
-            >
-              Add a valid URL
-            </button>
+            <span className="chip">Add a valid URL</span>
           </div>
         )}
         <div className={`dropdown-body ${qrOpen ? 'is-open' : ''}`}>

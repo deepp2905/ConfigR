@@ -28,6 +28,8 @@ interface QrLayerProps {
   aspect: number
   frameRef: React.RefObject<HTMLDivElement | null>
   onSelect: () => void
+  /** True while a move/resize gesture is active, so the link pill can fade out of the way. */
+  onDragStateChange: (dragging: boolean) => void
   onChange: (patch: Partial<QrConfig>) => void
 }
 
@@ -39,6 +41,7 @@ export function QrLayer({
   aspect,
   frameRef,
   onSelect,
+  onDragStateChange,
   onChange,
 }: QrLayerProps) {
   const [imgSrc, setImgSrc] = useState<string | null>(null)
@@ -87,6 +90,10 @@ export function QrLayer({
     e.preventDefault()
     e.stopPropagation()
     onSelect()
+    // Only a gesture that actually moves counts as a drag — a plain click to open the pill
+    // must not flicker it. Resizes hide it immediately, since the handles imply movement.
+    let moved = mode !== 'move'
+    if (moved) onDragStateChange(true)
     const rect = frameRef.current?.getBoundingClientRect()
     if (!rect) return
 
@@ -99,6 +106,10 @@ export function QrLayer({
     const startCenterY = qr.posY
 
     const onMove = (ev: PointerEvent) => {
+      if (!moved) {
+        moved = true
+        onDragStateChange(true)
+      }
       const nx = (ev.clientX - rect.left) / rect.width
       const ny = (ev.clientY - rect.top) / rect.height
       if (mode === 'move') {
@@ -125,6 +136,7 @@ export function QrLayer({
       }
     }
     const onUp = () => {
+      onDragStateChange(false)
       setGuides({ v: false, h: false })
       document.documentElement.classList.remove(cursorClass)
       window.removeEventListener('pointermove', onMove)
@@ -153,7 +165,7 @@ export function QrLayer({
         }}
         onPointerDown={(e) => beginDrag(e, 'move')}
         role="button"
-        aria-label="Drag to move the QR code"
+        aria-label="Drag to move the QR code, click to edit its link"
       >
         {qrStyle === 'dynamic' && maskUrl && (
           <div
