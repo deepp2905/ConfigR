@@ -542,12 +542,12 @@ html.qr-cur-nesw * {
   40%, 60% { transform: translate(calc(-50% + 6px), 14px); }
 }
 
-/* Sits below the pill, in its own dark translucent chip so it stays legible on any shader. */
-/* Left-aligned so its text starts on the same x as the input's: the pill's 14px left
+/* Sits above the pill, in its own dark translucent chip so it stays legible on any shader.
+   Left-aligned so its text starts on the same x as the input's: the pill's 14px left
    padding + the 13px globe + the 9px gap, less this chip's own 10px inset. */
 .qr-url-error {
   position: absolute;
-  top: calc(100% + 7px);
+  bottom: calc(100% + 7px);
   left: 26px;
   padding: 4px 10px;
   border-radius: 999px;
@@ -564,7 +564,7 @@ html.qr-cur-nesw * {
 @keyframes qr-url-error-in {
   from {
     opacity: 0;
-    transform: translateY(-3px);
+    transform: translateY(3px);
   }
   to {
     opacity: 1;
