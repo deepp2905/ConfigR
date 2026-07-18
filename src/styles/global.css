@@ -103,51 +103,6 @@ summary:focus-visible,
   outline-offset: 2px;
 }
 
-/* Reduced motion means gentler, not none: opacity and color still carry meaning (what
-   appeared, what changed), so they're kept. Only movement is removed. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    /* Cut movement, keep the fade. */
-    transition-property: opacity, color, background-color, border-color, box-shadow, filter;
-    transition-duration: 0.15s;
-    animation-duration: 0.15s;
-  }
-
-  /* Motion-only keyframes have nothing left to say without movement. */
-  .qr-url-editor.is-rejected,
-  .qr-intro {
-    animation: none;
-  }
-
-  /* Entrances stay, minus the scale. */
-  .qr-url-editor:not(.is-rejected),
-  .qr-url-error,
-  .ui-select-menu {
-    animation-name: qr-reduced-fade;
-  }
-
-  .modal {
-    transform: none;
-  }
-
-  /* Keep the tooltip's centering; drop only its scale. */
-  .swatch[data-label]::after,
-  .swatch[data-label]:hover::after,
-  .swatch[data-label]:focus-visible::after {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes qr-reduced-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 
 /* ---------- App shell ---------- */
 .app {
@@ -1708,5 +1663,21 @@ input[type='range']:active::-moz-range-thumb {
   .export-bar {
     padding-left: 18px;
     padding-right: 18px;
+  }
+}
+
+/* ---------- Reduced motion ----------
+   Last in the file on purpose: these are plain `*` selectors, so they only win over the
+   component rules above by source order. Moving this block earlier silently re-enables
+   every animation that has a class-level `animation:` shorthand. */
+@media (prefers-reduced-motion: reduce) {
+  /* :where() would drop specificity to 0 and lose to every class rule; :is(*) with a
+     doubled class-level hook raises this to (0,2,0) so it outranks the component-level
+     `animation:` shorthands without resorting to !important. */
+  :is(*, :root):is(*, :root),
+  :is(*, :root):is(*, :root)::before,
+  :is(*, :root):is(*, :root)::after {
+    transition: none;
+    animation: none;
   }
 }
