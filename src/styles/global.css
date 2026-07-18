@@ -518,17 +518,17 @@ html.qr-cur-nesw * {
   color: #fff;
 }
 
-/* Rejected save: a short horizontal shake, plus the message below. */
+/* Rejected save: a soft horizontal nudge, plus the message. Deliberately gentle — two
+   damped swings rather than a vibration, so it reads as a correction, not an alarm. */
 .qr-url-editor.is-rejected {
-  animation: qr-url-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  animation: qr-url-shake 0.3s ease-out;
 }
 
 /* Composed with the base translate so the pill keeps its anchored position mid-shake. */
 @keyframes qr-url-shake {
-  10%, 90% { transform: translate(calc(-50% - 2px), calc(-100% - 14px)); }
-  20%, 80% { transform: translate(calc(-50% + 4px), calc(-100% - 14px)); }
-  30%, 50%, 70% { transform: translate(calc(-50% - 6px), calc(-100% - 14px)); }
-  40%, 60% { transform: translate(calc(-50% + 6px), calc(-100% - 14px)); }
+  25% { transform: translate(calc(-50% - 3px), calc(-100% - 14px)); }
+  55% { transform: translate(calc(-50% + 2px), calc(-100% - 14px)); }
+  80% { transform: translate(calc(-50% - 1px), calc(-100% - 14px)); }
 }
 
 .qr-url-editor.is-below.is-rejected {
@@ -536,10 +536,9 @@ html.qr-cur-nesw * {
 }
 
 @keyframes qr-url-shake-below {
-  10%, 90% { transform: translate(calc(-50% - 2px), 14px); }
-  20%, 80% { transform: translate(calc(-50% + 4px), 14px); }
-  30%, 50%, 70% { transform: translate(calc(-50% - 6px), 14px); }
-  40%, 60% { transform: translate(calc(-50% + 6px), 14px); }
+  25% { transform: translate(calc(-50% - 3px), 14px); }
+  55% { transform: translate(calc(-50% + 2px), 14px); }
+  80% { transform: translate(calc(-50% - 1px), 14px); }
 }
 
 /* Sits on whichever side of the pill faces away from the QR, so it never covers the code:
@@ -573,6 +572,17 @@ html.qr-cur-nesw * {
   from {
     opacity: 0;
     transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes qr-url-error-in-below {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
   }
   to {
     opacity: 1;
@@ -1582,16 +1592,5 @@ input[type='range']:active::-moz-range-thumb {
   .export-bar {
     padding-left: 18px;
     padding-right: 18px;
-  }
-}
-
-@keyframes qr-url-error-in-below {
-  from {
-    opacity: 0;
-    transform: translateY(-3px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
