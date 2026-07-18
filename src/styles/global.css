@@ -502,6 +502,8 @@ html.qr-cur-nesw * {
   flex: none;
   align-self: stretch;
   border: 0;
+  /* Hairline divider from the field, matching the pill's own border. */
+  border-left: 1px solid var(--hairline-strong);
   border-radius: 0 999px 999px 0;
   padding: 9px 16px 9px 14px;
   font: inherit;
