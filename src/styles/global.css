@@ -669,19 +669,19 @@ html.qr-cur-nesw * {
 
 /* Pill variant — used for the device picker under the preview (fixed 250px) */
 .ui-select.pill {
-  width: 250px;
+  width: 300px;
 }
 
 .ui-select.pill .ui-select-trigger {
-  width: 250px;
+  width: 300px;
   /* Frosted glass to match the randomize button / dropdown-pill theme. */
   background: color-mix(in srgb, var(--panel) 70%, transparent);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
   color: var(--text-2);
   border-radius: 999px;
-  padding: 7px 16px;
-  font-size: 12.5px;
+  padding: 8.4px 19.2px;
+  font-size: 15px;
 }
 
 .ui-select.pill .ui-select-trigger:hover {
@@ -720,8 +720,11 @@ html.qr-cur-nesw * {
   right: 0;
 }
 
+/* Scaled with the trigger so the open menu reads as the same control. */
 .ui-select.pill .ui-select-option {
   white-space: normal;
+  padding: 9.6px 12px;
+  font-size: 15px;
 }
 
 .ui-select-option {
