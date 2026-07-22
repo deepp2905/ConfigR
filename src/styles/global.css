@@ -864,7 +864,7 @@ html.qr-cur-nesw * {
 /* ② Style — visual picker */
 .style-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
@@ -878,6 +878,7 @@ html.qr-cur-nesw * {
 }
 
 .style-thumb {
+  display: block;
   width: 100%;
   aspect-ratio: 1;
   border-radius: var(--radius-sm);
