@@ -877,8 +877,14 @@ html.qr-cur-nesw * {
   background: none;
 }
 
+/* The shader lib prepends its own <canvas> into this element and positions it
+   absolutely at z-index:-1, so the thumb must be a positioned, isolated box for the
+   canvas to paint inside it. `isolation` keeps the negative z-index from dropping
+   behind the tile; without it the canvas renders under the panel background. */
 .style-thumb {
   display: block;
+  position: relative;
+  isolation: isolate;
   width: 100%;
   aspect-ratio: 1;
   border-radius: var(--radius-sm);
