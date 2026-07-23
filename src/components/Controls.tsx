@@ -7,11 +7,6 @@ import { NoQrModal } from './NoQrModal'
 import { Chevron } from './Chevron'
 import { isValidUrl } from '../lib/url'
 
-const QR_COLORS: { id: string; label: string; value: string }[] = [
-  { id: 'white', label: 'White', value: QR_WHITE },
-  { id: 'black', label: 'Black', value: QR_BLACK },
-]
-
 function Slider({
   label,
   value,
@@ -133,22 +128,6 @@ export function Controls() {
         <div className={`dropdown-body ${qrOpen ? 'is-open' : ''}`}>
           <div className="dropdown-inner qr-fields">
           <div className="qr-field">
-            <span className="qr-field-label">Color</span>
-            <div className="swatches">
-              {QR_COLORS.map((c) => (
-                <button
-                  key={c.id}
-                  className={`swatch qr-dot ${state.qr.color === c.value ? 'is-active' : ''}`}
-                  data-label={c.label}
-                  aria-label={c.label}
-                  onClick={() => dispatch({ type: 'SET_QR', patch: { color: c.value } })}
-                  style={{ background: c.value }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="qr-field">
             <span className="qr-field-label">Style</span>
             <div className="segmented" role="tablist" aria-label="QR style">
               {QR_STYLES.map((s) => (
@@ -187,6 +166,25 @@ export function Controls() {
                   dispatch({
                     type: 'SET_QR',
                     patch: { blendMode: state.qr.blendMode === 'overlay' ? 'normal' : 'overlay' },
+                  })
+                }
+              >
+                <span className="knob" />
+              </button>
+            </div>
+
+            {/* Invert: off = white QR (default), on = black. */}
+            <div className="switch-row">
+              <span>Invert</span>
+              <button
+                role="switch"
+                aria-checked={state.qr.color === QR_BLACK}
+                aria-label="Invert QR to black"
+                className={`switch ${state.qr.color === QR_BLACK ? 'on' : ''}`}
+                onClick={() =>
+                  dispatch({
+                    type: 'SET_QR',
+                    patch: { color: state.qr.color === QR_BLACK ? QR_WHITE : QR_BLACK },
                   })
                 }
               >
